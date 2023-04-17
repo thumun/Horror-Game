@@ -25,7 +25,6 @@ Window::Window() :
   _windowHeight(500),
   _backgroundColor(0.0f),
   _elapsedTime(0.0),
-  _cameraEnabled(true),
   _lastx(0), _lasty(0),
   _dt(-1.0) {
   init();
@@ -107,7 +106,6 @@ void Window::perspective(float fovRadians, float aspect,
 void Window::lookAt(const glm::vec3& camPos,
     const glm::vec3& camLook, const glm::vec3& up) {
   renderer.lookAt(camPos, camLook, up);
-  camera.set(camPos, camLook, up);
 }
 
 void Window::run() {
@@ -122,9 +120,6 @@ void Window::run() {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (cameraEnabled()) {
-      renderer.lookAt(camera.position(), camera.look(), camera.up());
-    }
     renderer.identity();
     draw();  // user function
     renderer.cleanupShaders();
@@ -243,7 +238,6 @@ void Window::init() {
   // Initialize openGL and set default values
   glEnable(GL_MULTISAMPLE);
   renderer.init();
-  camera.set(vec3(0.0, 0.0, 2.0), vec3(0.0));
   background(vec3(0));
 }
 
@@ -252,10 +246,6 @@ void Window::onMouseMotionCb(GLFWwindow* win, double pX, double pY) {
 }
 
 void Window::onMouseMotion(int pX, int pY) {
-  if (cameraEnabled()) {
-    camera.onMouseMotion(pX, pY);
-  }
-
   glm::vec2 mousePos = mousePosition();
   int dx = mousePos.x - _lastx;
   int dy = mousePos.y - _lasty;
@@ -272,11 +262,6 @@ void Window::onMouseButtonCb(GLFWwindow* win,
 void Window::onMouseButton(int button, int action, int mods) {
   double xpos, ypos;
   glfwGetCursorPos(_window, &xpos, &ypos);
-
-  // ASN TODO: Save/pass modifiers so users can get it
-  if (cameraEnabled()) {
-    camera.onMouseButton(button, action, xpos, ypos, mods);
-  }
 
   if (action == GLFW_PRESS) {
     _lastx = xpos;
@@ -301,10 +286,6 @@ void Window::onKeyboard(int key, int scancode, int action, int mods) {
     glfwSetWindowShouldClose(_window, GL_TRUE);
   }
 
-  if (cameraEnabled()) {
-    camera.onKeyboard(key, scancode, action, mods);
-  }
-
   if (action == GLFW_PRESS) {
     keyDown(key, mods);
   } else if (action == GLFW_RELEASE) {
@@ -319,9 +300,6 @@ void Window::onScrollCb(GLFWwindow* win, double xoffset, double yoffset) {
 }
 
 void Window::onScroll(float xoffset, float yoffset) {
-  if (cameraEnabled()) {
-    camera.onScroll(xoffset, yoffset);
-  }
   scroll(xoffset, yoffset);  // user hook
 }
 

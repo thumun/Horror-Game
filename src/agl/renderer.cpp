@@ -110,11 +110,9 @@ void Renderer::init() {
 
   initLines();
   initBillboards();
-  initMesh();
   initText();
   loadShader("cubemap", "../shaders/cubemap.vs", "../shaders/cubemap.fs");
   loadShader("unlit", "../shaders/unlit.vs", "../shaders/unlit.fs");
-  loadShader("normals", "../shaders/normals.vs", "../shaders/normals.fs");
 
   _cube = new Cube(1.0f);
   _cone = new Cylinder(0.5f, 0.01, 1, PrimitiveSubdivision);
@@ -128,32 +126,7 @@ void Renderer::init() {
   _trs = mat4(1.0);
   _initialized = true;
 
-  beginShader("phong");  // phong is default
-}
-
-void Renderer::initMesh() {
-  loadShader("phong", "../shaders/phong.vs", "../shaders/phong.fs");
-
-  // Set default parameters
-  beginShader("phong");
-  setUniform("Gamma", 0.8f);
-  setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
-  setUniform("Material.diffuse", 1.0f, 1.0f, 1.0f);
-  setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
-  setUniform("Material.shininess", 80.0f);
-  setUniform("Light.position", 100.0f, 100.0f, 100.0f, 1.0f);
-  setUniform("Light.color", 1.0f, 1.0f, 1.0f);
-  setUniform("Fog.enabled", false);
-  setUniform("HasUV", false);
-
-  setUniform("MainTexture.enabled", false);
-  setUniform("MainTexture.offset", vec2(0.0f));
-  setUniform("MainTexture.tile", vec2(1.0f));
-
-  setUniform("DetailTexture.enabled", false);
-  setUniform("DetailTexture.offset", vec2(0.0f));
-  setUniform("DetailTexture.tile", vec2(1.0f));
-  endShader();
+  beginShader("unlit");  // unlit is default
 }
 
 void Renderer::initLines() {

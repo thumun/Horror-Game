@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(particles)
+project(project-template)
 
 if (WIN32) # Include win64 platforms
 
@@ -84,24 +84,12 @@ link_directories(${LIBRARY_DIRS})
 file(GLOB SOURCES "src/agl/*.h" "src/agl/*.cpp" "src/agl/mesh/*.h" "src/agl/mesh/*.cpp") 
 
 set(SHADERS
-    shaders/billboard-animated.fs
-    shaders/billboard-animated.vs
-    shaders/simple-texture.fs
-    shaders/simple-texture.vs
-    shaders/billboard.fs
-    shaders/billboard.vs)
+    shaders/unlit.vs
+    shaders/unlit.fs
+    )
 
-add_executable(sparkle-trail src/sparkle-trail.cpp ${SOURCES} ${SHADERS})
-target_link_libraries(sparkle-trail ${CORE})
-
-add_executable(sparkles src/sparkles.cpp ${SOURCES} ${SHADERS})
-target_link_libraries(sparkles ${CORE})
-
-add_executable(explosion src/explosion.cpp ${SOURCES} ${SHADERS})
-target_link_libraries(explosion ${CORE})
-
-add_executable(billboard-axis src/billboard-axis.cpp ${SOURCES} ${SHADERS})
-target_link_libraries(billboard-axis ${CORE})
+add_executable(demo src/demo.cpp ${SOURCES} ${SHADERS})
+target_link_libraries(demo ${CORE})
 
 if (WIN32)
   source_group("shaders" FILES ${SHADERS})

@@ -8,7 +8,6 @@
 #include "agl/agl.h"
 #include "agl/aglm.h"
 #include "agl/renderer.h"
-#include "agl/camera.h"
 
 namespace agl {
 
@@ -289,17 +288,6 @@ class Window {
   void ortho(float minx, float maxx,
       float miny, float maxy, float minz, float maxz);
 
-  /**
-   * @brief Returns true if the camera controls are active; false otherwise
-   * @see Camera
-   */
-  inline bool cameraEnabled() const { return _cameraEnabled; }
-
-  /**
-   * @brief Set whether the window's camera controls are active
-   * @see Camera
-   */
-  inline void setCameraEnabled(bool on) { _cameraEnabled = on; }
   ///@}
 
 
@@ -321,14 +309,12 @@ class Window {
 
  protected:
   Renderer renderer;
-  Camera camera;
 
  private:
   int _windowWidth, _windowHeight;
   float _elapsedTime;
   float _dt;
   float _lastx, _lasty;
-  bool _cameraEnabled;
   glm::vec3 _backgroundColor;
   struct GLFWwindow* _window = 0;
 
