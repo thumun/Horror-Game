@@ -16,7 +16,7 @@ struct LightInfo {
  vec3 Ls; // Specular light intensity
 };
 
-uniform LightInfo Light;
+uniform LightInfo Light[1];
 
 struct MaterialInfo {
  vec3 Ka; // Ambient reflectivity
@@ -30,6 +30,8 @@ uniform MaterialInfo Material;
 out vec3 LightIntensity;
 out vec2 uv; 
 
+// https://math.hws.edu/graphicsbook/c7/s2.html 
+
 void main()
 {
    uv = vPos.xy;//vTextureCoords;
@@ -37,20 +39,20 @@ void main()
    vec3 tnorm = normalize( NormalMatrix * vNormals);
    vec4 eyeCoords = ModelViewMatrix * vec4(vPos,1.0);
 
-   vec3 s = normalize(vec3(Light.Position - eyeCoords));
+   vec3 s = normalize(vec3(Light[0].Position - eyeCoords));
    vec3 v = normalize(-eyeCoords.xyz);
    //vec3 r = reflect( -s, tnorm );
    vec3 r = 2*dot(s, tnorm)*tnorm - s;
 
-   vec3 ambient = Light.La * Material.Ka;
+   vec3 ambient = Light[0].La * Material.Ka;
 
    float sDotN = max( dot(s,tnorm), 0.0 );
 
-   vec3 diffuse = Light.Ld * Material.Kd * sDotN;
+   vec3 diffuse = Light[0].Ld * Material.Kd * sDotN;
    
    vec3 spec = vec3(0.0);
    if( sDotN > 0.0 )
-      spec = Light.Ls * Material.Ks *
+      spec = Light[0].Ls * Material.Ks *
             pow( max( dot(r,v), 0.0 ), 80);//Material.Shininess);
    
    LightIntensity = ambient + diffuse + spec;

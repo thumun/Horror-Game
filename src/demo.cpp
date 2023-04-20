@@ -47,19 +47,39 @@ public:
   void scroll(float dx, float dy) {
   }
 
+  void keyDown(int key, int mods) {
+    if (key == GLFW_KEY_W){
+      eyePos = eyePos - stepSize*n;
+    } else if (key == GLFW_KEY_A){
+      eyePos = eyePos + stepSize*v;
+
+    } else if (key == GLFW_KEY_S){
+      eyePos = eyePos + stepSize*n;
+
+    } else if (key == GLFW_KEY_D){
+      eyePos = eyePos - stepSize*v;
+
+    }
+  }
+
   void draw() {
     renderer.beginShader(shaders[shaderIndx]);
     float aspect = ((float)width()) / height();
     renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
-    renderer.lookAt(vec3(0,0,2), vec3(0), vec3(0,1,0));
+
+    n = normalize(eyePos-lookPos);
+    v = cross(up, n);
+    up = normalize(cross(n, v));
+
+    renderer.lookAt(eyePos, lookPos, up);
 
     //http://learnwebgl.brown37.net/09_lights/lights_combined.html
     // used above to find numbers for lights 
-    renderer.setUniform("Light.Position", 20, 20, 20, 1);
-    renderer.setUniform("Light.La", 0.4, 0.2, 0.2);
+    renderer.setUniform("Light[0].Position", 20, 20, 20, 1);
+    renderer.setUniform("Light[0].La", 0.4, 0.2, 0.2);
     // hoping for a yellow color for light 
-    renderer.setUniform("Light.Ld", 1.0, 1.0, 0.7);
-    renderer.setUniform("Light.Ls", 1.0, 1.0, 0.7);
+    renderer.setUniform("Light[0].Ld", 1.0, 1.0, 0.7);
+    renderer.setUniform("Light[0].Ls", 1.0, 1.0, 0.7);
 
     //https://learnopengl.com/Lighting/Materials
     // http://devernay.free.fr/cours/opengl/materials.html
@@ -76,17 +96,28 @@ public:
     // renderer.plane();
     // renderer.pop();
 
-    renderer.rotate(vec3(0,0,0));
-    renderer.scale(vec3(0.1f));
+    renderer.push();
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(0.25f));
     // renderer.scale(vec3(meshes[meshIndx].getScaleRatio())); 
     renderer.translate(meshes[meshIndx].getTranslateVal());
     renderer.mesh(meshes[meshIndx]);
+    renderer.pop();
+
     renderer.endShader();
+
   }
 
 protected:
   std::vector<PLYMesh> meshes; 
   std::vector<string> shaders;
+
+  vec3 eyePos = vec3(0,0,2);
+  vec3 lookPos = vec3(0, 0, 0);
+  vec3 up = vec3(0, 1, 0);
+  vec3 n = normalize(eyePos-lookPos);
+  vec3 v = cross(up, n);
+  float stepSize = 0.1f;
 
 private: 
   int meshIndx;
