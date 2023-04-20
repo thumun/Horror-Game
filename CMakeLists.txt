@@ -83,9 +83,16 @@ link_directories(${LIBRARY_DIRS})
 
 file(GLOB SOURCES "src/agl/*.h" "src/agl/*.cpp" "src/agl/mesh/*.h" "src/agl/mesh/*.cpp") 
 
+set(SOURCES 
+    ${SOURCES}
+    src/plymesh.cpp
+    src/plymesh.h )
+    
 set(SHADERS
     shaders/unlit.vs
     shaders/unlit.fs
+    shaders/phong-vertex.vs
+    shaders/phong-vertex.fs
     )
 
 add_executable(demo src/demo.cpp ${SOURCES} ${SHADERS})
