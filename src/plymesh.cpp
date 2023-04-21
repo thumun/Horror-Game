@@ -23,7 +23,7 @@ namespace agl {
 
    void PLYMesh::init() {
       assert(_positions.size() != 0);
-      initBuffers(&_faces, &_positions, &_normals);
+      initBuffers(&_faces, &_positions, &_normals, &_uvs);
    }
 
    PLYMesh::~PLYMesh() {
@@ -110,6 +110,9 @@ namespace agl {
                _normals.push_back(std::stof(lineItems[4])); // ny
                _normals.push_back(std::stof(lineItems[5])); // nz
 
+               _uvs.push_back(std::stof(lineItems[6])); // u
+               _uvs.push_back(std::stof(lineItems[7])); // v
+
                verticiesNum -= 1; 
             } else if (polygonNum > 0){
                getline(plyFile, line);
@@ -181,6 +184,16 @@ namespace agl {
 
    const std::vector<GLuint>& PLYMesh::indices() const {
       return _faces;
+   }
+
+   const std::vector<GLfloat>& PLYMesh::texCoords() const {
+      return _uvs;
+   }
+
+   void PLYMesh::getTexCoords(){
+      for (GLfloat i: _uvs){
+         cout << i << endl; 
+      }
    }
    
    float PLYMesh::getScaleRatio() {

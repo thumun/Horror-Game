@@ -34,7 +34,7 @@ out vec2 uv;
 
 void main()
 {
-   uv = vPos.xy;//vTextureCoords;
+   uv = vTextureCoords;
 
    vec3 tnorm = normalize( NormalMatrix * vNormals);
    vec4 eyeCoords = ModelViewMatrix * vec4(vPos,1.0);

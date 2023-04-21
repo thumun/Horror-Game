@@ -6,10 +6,24 @@
 #include <vector>
 #include "agl/window.h"
 #include "plymesh.h"
+// #include "osutils.h"
 
 using namespace std;
 using namespace glm;
 using namespace agl;
+
+
+// struct ModelData
+// {
+//   string name;
+//   PLYMesh file;
+
+//   ModelData(string _name)
+//   {
+//       name = _name;
+//       file = _name;
+//   }
+// };
 
 class Viewer : public Window {
 public:
@@ -19,7 +33,24 @@ public:
   void setup() {
     setWindowSize(1000, 1000);
 
+    meshData.insert({"victorianscene", PLYMesh("../models/victorianscene.ply")});
+    meshData.insert({"table", PLYMesh("../models/table.ply")});
+    meshData.insert({"mirror", PLYMesh("../models/mirror.ply")});
+    meshData.insert({"fireplacewall", PLYMesh("../models/fireplacewall.ply")});
+    meshData.insert({"chandelier", PLYMesh("../models/chandelier.ply")});
+
+    // std::vector<std::string> dir = GetFilenamesInDir("../models", "ply"); 
+    // for (string file: dir){
+    //   meshes.push_back(file);
+    // }
+
+    // for (string filename: meshes){
+    //   meshes.push_back(filename);
+    // }
+
     string fileName = "../models/victorianscene.ply";
+    // meshData.insert({fileName, })
+    // meshes.insert({fileName[], fileName});
     meshes.push_back(fileName);
 
     shaders.push_back("phong-vertex");
@@ -27,12 +58,16 @@ public:
 
     renderer.loadShader(s, "../shaders/"+s+".vs", "../shaders/"+s+".fs");
 
+    renderer.loadTexture("victorian", "../textures/victorianscene.png", 0);
+
     meshIndx = 0; 
     shaderIndx = 0;
+
+    meshes[meshIndx].getTexCoords();
   }
 
   ~Viewer(){
-    meshes.clear();
+    // meshes.clear();
   }
 
   void mouseMotion(int x, int y, int dx, int dy) {
@@ -64,6 +99,9 @@ public:
 
   void draw() {
     renderer.beginShader(shaders[shaderIndx]);
+
+    renderer.setUniform("isTexture", true);
+
     float aspect = ((float)width()) / height();
     renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
 
@@ -97,19 +135,32 @@ public:
     // renderer.pop();
 
     renderer.push();
+    renderer.texture("diffuseTexture", "victorian");
     renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(0.25f));
-    // renderer.scale(vec3(meshes[meshIndx].getScaleRatio())); 
+    // renderer.scale(vec3(0.25f));
+    // renderer.scale(vec3(meshData["victorianscene"].getScaleRatio())); 
+    // renderer.translate(meshData["victorianscene"].getTranslateVal());
+    renderer.scale(vec3(meshes[meshIndx].getScaleRatio())); 
     renderer.translate(meshes[meshIndx].getTranslateVal());
+    // renderer.mesh(meshData["victorianscene"]);
     renderer.mesh(meshes[meshIndx]);
     renderer.pop();
+
+    // renderer.push();
+    // renderer.rotate(vec3(-M_PI/2,0,0));
+    // renderer.scale(vec3(meshData[""].getScaleRatio())); 
+    // renderer.translate(meshData[meshIndx].getTranslateVal());
+    // renderer.mesh(meshData[meshIndx]);
+    // renderer.pop();
 
     renderer.endShader();
 
   }
 
 protected:
+  map<string, PLYMesh> meshData; 
   std::vector<PLYMesh> meshes; 
+  // std::vector<PLYMesh> meshesPLY; 
   std::vector<string> shaders;
 
   vec3 eyePos = vec3(0,0,2);

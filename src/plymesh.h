@@ -63,6 +63,12 @@ namespace agl {
       // Positions in this model
       const std::vector<GLfloat>& normals() const;
 
+      // textures in this model 
+      const std::vector<GLfloat>& texCoords() const;
+
+      // return tex coords 
+      void getTexCoords();
+
       // Return number of faces in this model
       int numTriangles() const;
 
@@ -85,6 +91,7 @@ namespace agl {
       std::vector<GLfloat> _positions;
       std::vector<GLfloat> _normals;
       std::vector<GLuint> _faces;
+      std::vector<GLfloat> _uvs;
 
    private:
       
