@@ -58,7 +58,8 @@ public:
 
     renderer.loadShader(s, "../shaders/"+s+".vs", "../shaders/"+s+".fs");
 
-    renderer.loadTexture("victorian", "../textures/victorianscene.png", 0);
+    renderer.loadTexture("victorianscene", "../textures/victorianscene.png", 0);
+    renderer.loadTexture("table", "../textures/table.png", 0);
 
     meshIndx = 0; 
     shaderIndx = 0;
@@ -82,18 +83,30 @@ public:
   void scroll(float dx, float dy) {
   }
 
-  void keyDown(int key, int mods) {
+  void keyUp(int key, int mods) {
     if (key == GLFW_KEY_W){
-      eyePos = eyePos - stepSize*n;
+      wkey = false;
     } else if (key == GLFW_KEY_A){
-      eyePos = eyePos + stepSize*v;
+      akey = false; 
 
     } else if (key == GLFW_KEY_S){
-      eyePos = eyePos + stepSize*n;
+      skey = false; 
 
     } else if (key == GLFW_KEY_D){
-      eyePos = eyePos - stepSize*v;
+      dkey = false; 
 
+    }
+  }
+
+  void keyDown(int key, int mods) {
+    if (key == GLFW_KEY_W){
+      wkey = true;
+    } else if (key == GLFW_KEY_A){
+      akey = true; 
+    } else if (key == GLFW_KEY_S){
+      skey = true; 
+    } else if (key == GLFW_KEY_D){
+      dkey = true; 
     }
   }
 
@@ -104,6 +117,16 @@ public:
 
     float aspect = ((float)width()) / height();
     renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
+
+    if (wkey){
+      eyePos = eyePos - stepSize*n;
+    } else if (akey){
+      eyePos = eyePos + stepSize*v;
+    } else if (skey){
+      eyePos = eyePos + stepSize*n;
+    } else if (dkey){
+      eyePos = eyePos - stepSize*v;
+    }
 
     n = normalize(eyePos-lookPos);
     v = cross(up, n);
@@ -135,15 +158,28 @@ public:
     // renderer.pop();
 
     renderer.push();
-    renderer.texture("diffuseTexture", "victorian");
+    renderer.texture("diffuseTexture", "victorianscene");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(2.0f));
+    // renderer.scale(vec3(meshData["victorianscene"].getScaleRatio())); 
+    renderer.translate(meshData["victorianscene"].getTranslateVal());
+    // renderer.scale(vec3(meshes[meshIndx].getScaleRatio())); 
+    // renderer.translate(meshes[meshIndx].getTranslateVal());
+    // renderer.mesh(meshData["victorianscene"]);
+    renderer.mesh(meshData["victorianscene"]);
+    renderer.pop();
+
+    renderer.push();
+    // renderer.texture("diffuseTexture", "victorianscene");
     renderer.rotate(vec3(-M_PI/2,0,0));
     // renderer.scale(vec3(0.25f));
-    // renderer.scale(vec3(meshData["victorianscene"].getScaleRatio())); 
-    // renderer.translate(meshData["victorianscene"].getTranslateVal());
-    renderer.scale(vec3(meshes[meshIndx].getScaleRatio())); 
-    renderer.translate(meshes[meshIndx].getTranslateVal());
+    renderer.scale(vec3(meshData["table"].getScaleRatio())); 
+    renderer.translate(meshData["table"].getTranslateVal());
+    renderer.translate(vec3(0, 0, -2.0f));
+    // renderer.scale(vec3(meshes[meshIndx].getScaleRatio())); 
+    // renderer.translate(meshes[meshIndx].getTranslateVal());
     // renderer.mesh(meshData["victorianscene"]);
-    renderer.mesh(meshes[meshIndx]);
+    renderer.mesh(meshData["table"]);
     renderer.pop();
 
     // renderer.push();
@@ -173,6 +209,11 @@ protected:
 private: 
   int meshIndx;
   int shaderIndx;
+
+  bool wkey = false; 
+  bool akey = false; 
+  bool skey = false; 
+  bool dkey = false; 
 
 
 };
