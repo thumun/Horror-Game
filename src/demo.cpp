@@ -59,7 +59,8 @@ public:
     renderer.loadShader(s, "../shaders/"+s+".vs", "../shaders/"+s+".fs");
 
     renderer.loadTexture("victorianscene", "../textures/victorianscene.png", 0);
-    renderer.loadTexture("table", "../textures/table.png", 0);
+    renderer.loadTexture("table", "../textures/table.png", 1);
+    renderer.loadTexture("chandelier", "../textures/chandelier.png", 1);
 
     meshIndx = 0; 
     shaderIndx = 0;
@@ -160,7 +161,7 @@ public:
     renderer.push();
     renderer.texture("diffuseTexture", "victorianscene");
     renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(2.0f));
+    renderer.scale(vec3(4.0f));
     // renderer.scale(vec3(meshData["victorianscene"].getScaleRatio())); 
     renderer.translate(meshData["victorianscene"].getTranslateVal());
     // renderer.scale(vec3(meshes[meshIndx].getScaleRatio())); 
@@ -170,16 +171,21 @@ public:
     renderer.pop();
 
     renderer.push();
-    // renderer.texture("diffuseTexture", "victorianscene");
+    renderer.texture("diffuseTexture", "table");
     renderer.rotate(vec3(-M_PI/2,0,0));
-    // renderer.scale(vec3(0.25f));
-    renderer.scale(vec3(meshData["table"].getScaleRatio())); 
+    renderer.scale(vec3(5.0f));
     renderer.translate(meshData["table"].getTranslateVal());
-    renderer.translate(vec3(0, 0, -2.0f));
-    // renderer.scale(vec3(meshes[meshIndx].getScaleRatio())); 
-    // renderer.translate(meshes[meshIndx].getTranslateVal());
-    // renderer.mesh(meshData["victorianscene"]);
+    renderer.translate(vec3(0, 0, -2.2f));
     renderer.mesh(meshData["table"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "chandelier");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(3.0f));
+    renderer.translate(meshData["chandelier"].getTranslateVal());
+    renderer.translate(vec3(0, 0, 2.4f));
+    renderer.mesh(meshData["chandelier"]);
     renderer.pop();
 
     // renderer.push();
