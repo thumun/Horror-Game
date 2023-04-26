@@ -201,9 +201,10 @@ public:
 
     //http://learnwebgl.brown37.net/09_lights/lights_combined.html
     // used above to find numbers for lights 
-    renderer.setUniform("Spot.position",vec4(eyePos, 1));
+    //renderer.setUniform("Spot.position",vec4(eyePos, 1));
+    renderer.setUniform("Spot.position",vec4(cameraPos, 1));
     renderer.setUniform("Spot.intensity", 0.8f, 0.8f, 0.5f);
-    renderer.setUniform("Spot.direction", -n);
+    renderer.setUniform("Spot.direction", cameraFront);
     renderer.setUniform("Spot.exponent", 1.0f);
     renderer.setUniform("Spot.cutoff", 8.0f);
 
