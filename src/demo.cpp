@@ -36,6 +36,14 @@ public:
     meshData.insert({"victorianscene", PLYMesh("../models/victorianscene.ply")});
     meshData.insert({"table", PLYMesh("../models/table.ply")});
     meshData.insert({"chandelier", PLYMesh("../models/chandelier.ply")});
+    meshData.insert({"doorroom", PLYMesh("../models/doorroom.ply")});
+    meshData.insert({"wall", PLYMesh("../models/wall.ply")});
+
+    meshData.insert({"fireplacewall", PLYMesh("../models/fireplacewall.ply")});
+    meshData.insert({"fireplace", PLYMesh("../models/fireplace.ply")});
+    meshData.insert({"couch", PLYMesh("../models/couch.ply")});
+    meshData.insert({"books1", PLYMesh("../models/books1.ply")});
+    meshData.insert({"books2", PLYMesh("../models/books2.ply")});
 
     meshData.insert({"monster", PLYMesh("../models/monster.ply")});
 
@@ -62,6 +70,8 @@ public:
     renderer.loadTexture("table", "../textures/table.png", 1);
     renderer.loadTexture("chandelier", "../textures/chandelier.png", 2);
     renderer.loadTexture("monster", "../textures/monster.jpg", 3);
+    renderer.loadTexture("doorroom", "../textures/doorroom.png", 4);
+    renderer.loadTexture("wall", "../textures/woodwall.png", 5);
 
     meshIndx = 0; 
     shaderIndx = 0;
@@ -74,12 +84,48 @@ public:
   }
 
   void mouseMotion(int x, int y, int dx, int dy) {
+    if (mousePressed){
+      if (firstMouse){
+        lastX = x;
+        lastY = y;
+        firstMouse = false;
+      }
+        
+      float xoffset = x - lastX;
+      float yoffset = lastY - y; 
+      lastX = x;
+      lastY = y;
+
+      float sensitivity = 0.1f;
+      xoffset *= sensitivity;
+      yoffset *= sensitivity;
+
+      yaw += xoffset;
+      pitch += yoffset;
+
+      if(pitch > 89.0f){
+        pitch = 89.0f;
+      }
+          
+      if(pitch < -89.0f){
+        pitch = -89.0f;
+      }
+          
+      glm::vec3 direction;
+      direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+      direction.y = sin(glm::radians(pitch));
+      direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+      cameraFront = glm::normalize(direction);
+    }
+   
   }
 
-  void mouseDown(int button, int mods) {
+  void mouseDown(int button, int mods) {  
+    mousePressed = true; 
   }
 
   void mouseUp(int button, int mods) {
+    mousePressed = false; 
   }
 
   void scroll(float dx, float dy) {
@@ -97,7 +143,7 @@ public:
     } else if (key == GLFW_KEY_D){
       dkey = false; 
 
-    }
+    } 
   }
 
   void keyDown(int key, int mods) {
@@ -120,21 +166,30 @@ public:
     float aspect = ((float)width()) / height();
     renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
 
+  
+
     if (wkey){
-      eyePos = eyePos - stepSize*n;
+      //eyePos = eyePos - stepSize*n;
+      cameraPos += stepSize * cameraFront;
     } else if (akey){
-      eyePos = eyePos + stepSize*v;
+      //eyePos = eyePos + stepSize*v;
+      cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * stepSize;
+
     } else if (skey){
-      eyePos = eyePos + stepSize*n;
+      //eyePos = eyePos + stepSize*n;
+      cameraPos -= stepSize * cameraFront;
     } else if (dkey){
-      eyePos = eyePos - stepSize*v;
+      //eyePos = eyePos - stepSize*v;
+      cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * stepSize;
+
     }
 
     n = normalize(eyePos-lookPos);
     v = cross(up, n);
     up = normalize(cross(n, v));
 
-    renderer.lookAt(eyePos, lookPos, up);
+    // renderer.lookAt(eyePos, lookPos, up);
+    renderer.lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
     //http://learnwebgl.brown37.net/09_lights/lights_combined.html
     // used above to find numbers for lights 
@@ -150,7 +205,7 @@ public:
     renderer.setUniform("Spot.intensity", 0.8f, 0.8f, 0.5f);
     renderer.setUniform("Spot.direction", -n);
     renderer.setUniform("Spot.exponent", 1.0f);
-    renderer.setUniform("Spot.cutoff", 20.0f);
+    renderer.setUniform("Spot.cutoff", 8.0f);
 
     //https://learnopengl.com/Lighting/Materials
     // http://devernay.free.fr/cours/opengl/materials.html
@@ -173,6 +228,7 @@ public:
     renderer.scale(vec3(4.0f));
     // renderer.scale(vec3(meshData["victorianscene"].getScaleRatio())); 
     renderer.translate(meshData["victorianscene"].getTranslateVal());
+    renderer.translate(vec3(0, 0, 1.0f));
     // renderer.scale(vec3(meshes[meshIndx].getScaleRatio())); 
     // renderer.translate(meshes[meshIndx].getTranslateVal());
     // renderer.mesh(meshData["victorianscene"]);
@@ -180,11 +236,28 @@ public:
     renderer.pop();
 
     renderer.push();
+    renderer.texture("diffuseTexture", "doorroom");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(4.0f));
+    renderer.translate(meshData["doorroom"].getTranslateVal());
+    renderer.translate(vec3(8.2f, 0, 0));
+    renderer.mesh(meshData["doorroom"]);
+    renderer.pop();
+
+    // renderer.push();
+    // renderer.texture("diffuseTexture", "wall");
+    // renderer.rotate(vec3(-M_PI/2,0,0));
+    // renderer.scale(vec3(4.0f));
+    // renderer.translate(meshData["wall"].getTranslateVal());
+    // renderer.mesh(meshData["wall"]);
+    // renderer.pop();
+
+    renderer.push();
     renderer.texture("diffuseTexture", "table");
     renderer.rotate(vec3(-M_PI/2,0,0));
     renderer.scale(vec3(5.0f));
     renderer.translate(meshData["table"].getTranslateVal());
-    renderer.translate(vec3(0, 0, -2.2f));
+    renderer.translate(vec3(0, 0, -1.5f));
     renderer.mesh(meshData["table"]);
     renderer.pop();
 
@@ -193,7 +266,7 @@ public:
     renderer.rotate(vec3(-M_PI/2,0,0));
     renderer.scale(vec3(3.0f));
     renderer.translate(meshData["chandelier"].getTranslateVal());
-    renderer.translate(vec3(0, 0, 2.4f));
+    renderer.translate(vec3(0, 0, 3.8f));
     renderer.mesh(meshData["chandelier"]);
     renderer.pop();
 
@@ -203,7 +276,7 @@ public:
     renderer.rotate(vec3(-M_PI/2,0,0));
     renderer.scale(vec3(2.0f));
     renderer.translate(meshData["monster"].getTranslateVal());
-    renderer.translate(vec3(3.0f, 0, -4.0f));
+    renderer.translate(vec3(3.0f, 0, -3.0f));
     renderer.mesh(meshData["monster"]);
     renderer.pop();
 
@@ -224,12 +297,27 @@ protected:
   // std::vector<PLYMesh> meshesPLY; 
   std::vector<string> shaders;
 
-  vec3 eyePos = vec3(0,0,2);
+  vec3 eyePos = vec3(0,0,0.5f);
   vec3 lookPos = vec3(0, 0, 0);
   vec3 up = vec3(0, 1, 0);
   vec3 n = normalize(eyePos-lookPos);
   vec3 v = cross(up, n);
   float stepSize = 0.1f;
+
+  // the idea from class w/ eyepos was being weird so followed a tutorial 
+  // to set up camera/player: https://learnopengl.com/Getting-started/Camera
+  vec3 cameraPos = vec3(0.0f, 0.0f,  3.0f);
+  vec3 cameraFront = vec3(0.0f, 0.0f, -1.0f);
+  vec3 cameraUp = vec3(0.0f, 1.0f,  0.0f);
+
+  bool firstMouse = true; 
+  float lastX = 500;
+  float lastY = 300;
+  float yaw = -90.0f;
+  float pitch = 0;
+
+  bool mousePressed = false; 
+
 
 private: 
   int meshIndx;

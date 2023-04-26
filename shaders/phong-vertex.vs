@@ -93,8 +93,8 @@ void main()
 
    vec3 spotlightInfo = adsWithSpotlight();
    
-   //LightIntensity = spotlightInfo + ambient + diffuse + spec;
-   LightIntensity = spotlightInfo;
+   LightIntensity = + ambient + diffuse + spec;
+   //LightIntensity = spotlightInfo;
    gl_Position = MVP * vec4(vPos, 1.0);
 
 }
