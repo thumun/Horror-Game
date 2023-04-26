@@ -35,9 +35,9 @@ public:
 
     meshData.insert({"victorianscene", PLYMesh("../models/victorianscene.ply")});
     meshData.insert({"table", PLYMesh("../models/table.ply")});
-    meshData.insert({"mirror", PLYMesh("../models/mirror.ply")});
-    meshData.insert({"fireplacewall", PLYMesh("../models/fireplacewall.ply")});
     meshData.insert({"chandelier", PLYMesh("../models/chandelier.ply")});
+
+    meshData.insert({"monster", PLYMesh("../models/monster.ply")});
 
     // std::vector<std::string> dir = GetFilenamesInDir("../models", "ply"); 
     // for (string file: dir){
@@ -60,7 +60,8 @@ public:
 
     renderer.loadTexture("victorianscene", "../textures/victorianscene.png", 0);
     renderer.loadTexture("table", "../textures/table.png", 1);
-    renderer.loadTexture("chandelier", "../textures/chandelier.png", 1);
+    renderer.loadTexture("chandelier", "../textures/chandelier.png", 2);
+    renderer.loadTexture("monster", "../textures/monster.jpg", 3);
 
     meshIndx = 0; 
     shaderIndx = 0;
@@ -143,6 +144,14 @@ public:
     renderer.setUniform("Light[0].Ld", 1.0, 1.0, 0.7);
     renderer.setUniform("Light[0].Ls", 1.0, 1.0, 0.7);
 
+    //http://learnwebgl.brown37.net/09_lights/lights_combined.html
+    // used above to find numbers for lights 
+    renderer.setUniform("Spot.position",vec4(eyePos, 1));
+    renderer.setUniform("Spot.intensity", 0.8f, 0.8f, 0.5f);
+    renderer.setUniform("Spot.direction", -n);
+    renderer.setUniform("Spot.exponent", 1.0f);
+    renderer.setUniform("Spot.cutoff", 20.0f);
+
     //https://learnopengl.com/Lighting/Materials
     // http://devernay.free.fr/cours/opengl/materials.html
     // above link has table of materials -- used below (pearl)
@@ -186,6 +195,16 @@ public:
     renderer.translate(meshData["chandelier"].getTranslateVal());
     renderer.translate(vec3(0, 0, 2.4f));
     renderer.mesh(meshData["chandelier"]);
+    renderer.pop();
+
+    // make horror follow 
+    renderer.push();
+    renderer.texture("diffuseTexture", "monster");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(2.0f));
+    renderer.translate(meshData["monster"].getTranslateVal());
+    renderer.translate(vec3(3.0f, 0, -4.0f));
+    renderer.mesh(meshData["monster"]);
     renderer.pop();
 
     // renderer.push();
