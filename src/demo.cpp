@@ -407,16 +407,9 @@ public:
     renderer.rotate(vec3(0,M_PI,0));
     renderer.scale(vec3(2.0f));
     renderer.translate(vec3(0, 1.4, -0.8f));
-    renderer.translate(monsterMov);
+    renderer.translate(-1.0f*vec3(cameraPos.x, cameraPos.y, cameraPos.z));
     renderer.mesh(meshData["monster"]);
     renderer.pop();
-
-    // renderer.push();
-    // renderer.rotate(vec3(-M_PI/2,0,0));
-    // renderer.scale(vec3(meshData[""].getScaleRatio())); 
-    // renderer.translate(meshData[meshIndx].getTranslateVal());
-    // renderer.mesh(meshData[meshIndx]);
-    // renderer.pop();
 
     renderer.endShader();
 
@@ -425,7 +418,6 @@ public:
 protected:
   map<string, PLYMesh> meshData; 
   std::vector<PLYMesh> meshes; 
-  // std::vector<PLYMesh> meshesPLY; 
   std::vector<string> shaders;
 
   vec3 eyePos = vec3(0,0,0.5f);
@@ -441,7 +433,7 @@ protected:
   vec3 cameraFront = vec3(0.0f, 0.0f, -1.0f);
   vec3 cameraUp = vec3(0.0f, 1.0f,  0.0f);
 
-  vec3 monsterMov = vec3(0, -3.0f, -1.55f);
+  // vec3 monsterMov = vec3(0, -3.0f, -1.55f);
 
   bool firstMouse = true; 
   float lastX = 500;
