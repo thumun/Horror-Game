@@ -87,6 +87,16 @@ public:
     renderer.loadTexture("viola", "../textures/viola.png", 11);
 
     renderer.loadTexture("victorianscene-normal", "../normaltextures/victorianroom.png", 12);
+    renderer.loadTexture("doorroom-normal", "../normaltextures/doorroom.png", 13);
+    renderer.loadTexture("wall-normal", "../normaltextures/wall.png", 14);
+    renderer.loadTexture("books1-normal", "../normaltextures/books1.png", 15);
+    renderer.loadTexture("books2-normal", "../normaltextures/books2.png", 16);
+    renderer.loadTexture("chair-normal", "../normaltextures/chair.png", 17);
+    renderer.loadTexture("chandelier-normal", "../normaltextures/chandelier.png", 18);
+    renderer.loadTexture("fireplace-normal", "../normaltextures/fireplace.png", 19);
+    renderer.loadTexture("fireplacewall-normal", "../normaltextures/fireplacewall.png", 20);
+    renderer.loadTexture("table-normal", "../normaltextures/table.png", 21);
+    renderer.loadTexture("viola-normal", "../normaltextures/viola.png", 22);
 
     meshIndx = 0; 
     shaderIndx = 0;
@@ -257,133 +267,6 @@ public:
     // renderer.mesh(meshData["victorianscene"]);
     // renderer.pop();
 
-    renderer.push();
-    renderer.texture("diffuseTexture", "doorroom");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(4.0f));
-    renderer.translate(meshData["doorroom"].getTranslateVal());
-    renderer.translate(vec3(2.7f, 0, 0.1f));
-    renderer.mesh(meshData["doorroom"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "wall");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(6.0f));
-    renderer.translate(meshData["wall"].getTranslateVal());
-    renderer.translate(vec3(0, 2.0f, 0));
-    renderer.mesh(meshData["wall"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "table");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(5.0f));
-    renderer.translate(meshData["table"].getTranslateVal());
-    renderer.translate(vec3(5.5f, 0, -1.5f));
-    renderer.mesh(meshData["table"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "chandelier");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(3.0f));
-    renderer.translate(meshData["chandelier"].getTranslateVal());
-    renderer.translate(vec3(0, 0, 3.8f));
-    renderer.mesh(meshData["chandelier"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "fireplace");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(5.0f));
-    renderer.translate(meshData["fireplace"].getTranslateVal());
-    renderer.translate(vec3(0.3f, 3.2f, -0.8f));
-    renderer.mesh(meshData["fireplace"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "fireplacewall");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(5.0f));
-    renderer.translate(meshData["fireplacewall"].getTranslateVal());
-    renderer.translate(vec3(0.3f, 3.2f, -0.8f));
-    renderer.mesh(meshData["fireplacewall"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "chair");
-    renderer.rotate(vec3(-M_PI/2,sqrt(3)/2,0));
-    renderer.scale(vec3(5.0f));
-    renderer.translate(meshData["couch"].getTranslateVal());
-    renderer.translate(vec3(4.2f, -2.5f, -1.2f));
-    renderer.mesh(meshData["couch"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "chair");
-    renderer.rotate(vec3(-M_PI/2,-sqrt(3)/2,0));
-    renderer.scale(vec3(5.0f));
-    renderer.translate(meshData["couch"].getTranslateVal());
-    renderer.translate(vec3(4.2f, 6.1f, -1.2f));
-    renderer.mesh(meshData["couch"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "books1");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(5.0f));
-    renderer.translate(meshData["books1"].getTranslateVal());
-    renderer.translate(vec3(-3.0f, 0.3f, 0.2f));
-    renderer.mesh(meshData["books1"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "books2");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(5.0f));
-    renderer.translate(meshData["books2"].getTranslateVal());
-    renderer.translate(vec3(-3.0f, 0.9f, 0.16f));
-    renderer.mesh(meshData["books2"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "books2");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(5.0f));
-    renderer.translate(meshData["books1"].getTranslateVal());
-    renderer.translate(vec3(-3.3f, 0.9f, 0.90f));
-    renderer.mesh(meshData["books1"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "books2");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(5.0f));
-    renderer.translate(meshData["books1"].getTranslateVal());
-    renderer.translate(vec3(-3.3f, 3.0f, 0.90f));
-    renderer.mesh(meshData["books1"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "books1");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(5.0f));
-    renderer.translate(meshData["books1"].getTranslateVal());
-    renderer.translate(vec3(-3.0f, -0.9f, 0.16f));
-    renderer.mesh(meshData["books1"]);
-    renderer.pop();
-
-    renderer.push();
-    renderer.texture("diffuseTexture", "viola");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(5.0f));
-    renderer.translate(meshData["viola"].getTranslateVal());
-    renderer.translate(vec3(-2.8f, 0, -1.5f));
-    renderer.rotate(vec3(-M_PI/2,sqrt(3)/2,0));
-    renderer.mesh(meshData["viola"]);
-    renderer.pop();
-
     // make horror follow 
     renderer.push();
     renderer.texture("diffuseTexture", "monster");
@@ -420,6 +303,147 @@ public:
     renderer.translate(meshData["victorianscene"].getTranslateVal());
     renderer.translate(vec3(0, 0, 1.0f));
     renderer.mesh(meshData["victorianscene"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "doorroom");
+    renderer.texture("normalmap", "doorroom-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(4.0f));
+    renderer.translate(meshData["doorroom"].getTranslateVal());
+    renderer.translate(vec3(2.7f, 0, 0.2f));
+    renderer.mesh(meshData["doorroom"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "wall");
+    renderer.texture("normalmap", "wall-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(6.0f));
+    renderer.translate(meshData["wall"].getTranslateVal());
+    renderer.translate(vec3(0, 2.0f, 0));
+    renderer.mesh(meshData["wall"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "table");
+    renderer.texture("normalmap", "table-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["table"].getTranslateVal());
+    renderer.translate(vec3(5.5f, 0, -1.5f));
+    renderer.mesh(meshData["table"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "chandelier");
+    renderer.texture("normalmap", "chandelier-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(3.0f));
+    renderer.translate(meshData["chandelier"].getTranslateVal());
+    renderer.translate(vec3(0, 0, 3.8f));
+    renderer.mesh(meshData["chandelier"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "fireplace");
+    renderer.texture("normalmap", "fireplace-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["fireplace"].getTranslateVal());
+    renderer.translate(vec3(0.3f, 3.2f, -0.8f));
+    renderer.mesh(meshData["fireplace"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "fireplacewall");
+    renderer.texture("normalmap", "fireplacewall-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["fireplacewall"].getTranslateVal());
+    renderer.translate(vec3(0.3f, 3.2f, -0.8f));
+    renderer.mesh(meshData["fireplacewall"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "chair");
+    renderer.texture("normalmap", "chair-normal");
+    renderer.rotate(vec3(-M_PI/2,sqrt(3)/2,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["couch"].getTranslateVal());
+    renderer.translate(vec3(4.2f, -2.5f, -1.2f));
+    renderer.mesh(meshData["couch"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "chair");
+    renderer.texture("normalmap", "chair-normal");
+    renderer.rotate(vec3(-M_PI/2,-sqrt(3)/2,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["couch"].getTranslateVal());
+    renderer.translate(vec3(4.2f, 6.1f, -1.2f));
+    renderer.mesh(meshData["couch"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "books1");
+    renderer.texture("normalmap", "books1-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["books1"].getTranslateVal());
+    renderer.translate(vec3(-3.0f, 0.3f, 0.2f));
+    renderer.mesh(meshData["books1"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "books2");
+    renderer.texture("normalmap", "books2-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["books2"].getTranslateVal());
+    renderer.translate(vec3(-3.0f, 0.9f, 0.16f));
+    renderer.mesh(meshData["books2"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "books2");
+    renderer.texture("normalmap", "books2-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["books1"].getTranslateVal());
+    renderer.translate(vec3(-3.3f, 0.9f, 0.90f));
+    renderer.mesh(meshData["books1"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "books2");
+    renderer.texture("normalmap", "books2-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["books1"].getTranslateVal());
+    renderer.translate(vec3(-3.3f, 3.0f, 0.90f));
+    renderer.mesh(meshData["books1"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "books1");
+    renderer.texture("normalmap", "books1-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["books1"].getTranslateVal());
+    renderer.translate(vec3(-3.0f, -0.9f, 0.16f));
+    renderer.mesh(meshData["books1"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "viola");
+    renderer.texture("normalmap", "viola-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["viola"].getTranslateVal());
+    renderer.translate(vec3(-2.8f, 0, -1.5f));
+    renderer.rotate(vec3(-M_PI/2,sqrt(3)/2,0));
+    renderer.mesh(meshData["viola"]);
     renderer.pop();
 
     renderer.endShader();
