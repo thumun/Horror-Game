@@ -51,15 +51,18 @@ For future mechanics, I was thinking of making it an escape room style game wher
 
 Flythrough Camera: 
 
-The player navigates the space using the flythrough camera. In order to simulate walking, the player cannot move in the y-axis however they are free to look anywhere they like. This camera was created using the 
+The player navigates the space using the flythrough camera. In order to simulate walking, the player cannot move in the y-axis however they are free to look anywhere they like. 
 
 Spotlight: 
 
 The spotlight shines wherever the player looks. When they are farther away, more of the space is lit up but when they're close to objects, there is a smaller radius. Due to the combination of the bumpmap, the spotlight has crisp lines and makes it rather difficult for the player to see outside the circle of visibility.  
 
+This light uses the phong shader as a base but has a few added elements. Unlike directional light, spotlight has... 
+
 Bump Map: 
 
-The bump map uses the normals of the textures 
+The bump map uses the normals of the textures to simulate a 3d texture to the models based on the light hitting the model. 
+In this case, the bump map added a bit of a color shift along with the texture which made the scene seem more cottage core esque. 
 
 Scene: 
 
