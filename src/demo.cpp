@@ -48,37 +48,24 @@ public:
 
     meshData.insert({"monster", PLYMesh("../models/monster.ply")});
 
-    // std::vector<std::string> dir = GetFilenamesInDir("../models", "ply"); 
-    // for (string file: dir){
-    //   meshes.push_back(file);
-    // }
-
-    // for (string filename: meshes){
-    //   meshes.push_back(filename);
-    // }
-
     string fileName = "../models/victorianscene.ply";
-    // meshData.insert({fileName, })
-    // meshes.insert({fileName[], fileName});
     meshes.push_back(fileName);
 
     renderer.loadShader("phong-vertex",
       "../shaders/phong-vertex.vs",
       "../shaders/phong-vertex.fs");
 
-    renderer.loadShader("shadowmap-1",
-      "../shaders/shadowmap-1.vs",
-      "../shaders/shadowmap-1.fs");
+    // renderer.loadShader("shadowmap-1",
+    //   "../shaders/shadowmap-1.vs",
+    //   "../shaders/shadowmap-1.fs");
 
-    renderer.loadShader("shadowmap-2",
-      "../shaders/shadowmap-2.vs",
-      "../shaders/shadowmap-2.fs");
+    // renderer.loadShader("shadowmap-2",
+    //   "../shaders/shadowmap-2.vs",
+    //   "../shaders/shadowmap-2.fs");
 
-    // shaders.push_back("phong-vertex");
-    // shaders.push_back("phong-vertex");
-    // string s = "phong-vertex";
-
-    // renderer.loadShader(s, "../shaders/"+s+".vs", "../shaders/"+s+".fs");
+    // renderer.loadShader("bumpmap", 
+    //   "../shaders/bumpmap.vs",
+    //   "../shaders/bumpmap.fs");
 
     renderer.loadDepthTexture("shadowMap", 0, 512, 512);
 
@@ -274,13 +261,6 @@ public:
     renderer.setUniform("Material.Ks", 0.296648, 0.296648, 0.296648);
     renderer.setUniform("Material.Shininess", 0.088f);
 
-    // draw plane
-    // renderer.push();
-    // renderer.translate(vec3(0.0, -0.5, 0));
-    // renderer.scale(vec3(2.0f));
-    // renderer.plane();
-    // renderer.pop();
-
     renderer.push();
     renderer.texture("diffuseTexture", "victorianscene");
     renderer.rotate(vec3(-M_PI/2,0,0));
@@ -422,19 +402,14 @@ public:
     renderer.pop();
 
     // make horror follow 
-    // renderer.push();
-    // renderer.texture("diffuseTexture", "monster");
-
-    // renderer.translate(-1.0f*meshData["monster"].getTranslateVal());
-    // renderer.rotate(vec3(M_PI/2,3*M_PI/2,M_PI));
-    // renderer.translate(meshData["monster"].getTranslateVal());
-
-    // // renderer.rotate(vec3(-M_PI/2,0,0));
-    // renderer.scale(vec3(2.0f));
-    // renderer.translate(vec3(0, 0, -1.3f));
-    // // renderer.translate(monsterMov);
-    // renderer.mesh(meshData["monster"]);
-    // renderer.pop();
+    renderer.push();
+    renderer.texture("diffuseTexture", "monster");
+    renderer.rotate(vec3(0,M_PI,0));
+    renderer.scale(vec3(2.0f));
+    renderer.translate(vec3(0, 1.4, -0.8f));
+    renderer.translate(monsterMov);
+    renderer.mesh(meshData["monster"]);
+    renderer.pop();
 
     // renderer.push();
     // renderer.rotate(vec3(-M_PI/2,0,0));
