@@ -257,7 +257,7 @@ public:
       cameraPos += glm::normalize(glm::cross(view, cameraUp)) * stepSize;
     }
 
-    // n = normalize(eyePos-lookPos);
+    n = normalize(cameraPos-(cameraPos + cameraFront));
     // v = cross(up, n);
     // up = normalize(cross(n, v));
 
@@ -278,7 +278,7 @@ public:
     //renderer.setUniform("Spot.position",vec4(eyePos, 1));
     renderer.setUniform("Spot.position",vec4(cameraPos, 1));
     renderer.setUniform("Spot.intensity", 0.8f, 0.8f, 0.5f);
-    renderer.setUniform("Spot.direction", cameraFront);
+    renderer.setUniform("Spot.direction", n);
 
     // renderer.setUniform("Spot.ambient",  0.4, 0.2, 0.2);
     // renderer.setUniform("Spot.diffuse", 1.0, 1.0, 0.7);
