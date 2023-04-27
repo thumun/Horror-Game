@@ -2,11 +2,9 @@
 
 TODO: Replace "TODO" messages with your own text
 
-TODO: Add a description of your project here
-
 A game where you can explore a wonderful little cottage tucked away in the woods. Rather odd place for a cottage to be you may suppose but none the less you venture in and, alas, the door seems to be jammed. Perhaps there is something in this quaint little place that may pry open that door? It is rather intriguing how small it is, peculiar even. And you can't help but feel as if something is watching you... 
 
-TODO: Add a representative image for your project here
+![ccMainImg](https://github.com/thumun/Horror-Game/blob/main/images/ccmainimg.png)
 
 
 ## How to build
