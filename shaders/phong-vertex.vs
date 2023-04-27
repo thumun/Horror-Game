@@ -23,8 +23,17 @@ struct SpotLightInfo{
    vec4 position; 
    vec3 intensity;
    vec3 direction;
+
+   vec3 ambient;
+   vec3 diffuse;
+   vec3 specular;
+
    float exponent;
    float cutoff; 
+
+   float constant; 
+   float linear; 
+   float quadratic;
 }; 
 
 uniform SpotLightInfo Spot; 
@@ -37,9 +46,11 @@ struct MaterialInfo {
 };
 
 uniform MaterialInfo Material;
+uniform sampler2D diffuseTexture;
 
 out vec3 LightIntensity;
 out vec2 uv; 
+out vec4 Fcolor;
 
 // https://math.hws.edu/graphicsbook/c7/s2.html 
 
@@ -66,6 +77,47 @@ vec3 adsWithSpotlight(){
       return ambient; 
    }
 
+}
+
+// https://learnopengl.com/Lighting/Light-casters
+void learnSpotlight(){
+   vec4 eyeCoords = ModelViewMatrix * vec4(vPos,1.0);
+
+   vec3 lightDir = normalize(vec3(Spot.position - eyeCoords));
+   float theta = dot(lightDir, normalize(-Spot.direction)); 
+    
+    if(theta > Spot.cutoff) // remember that we're working with angles as cosines instead of degrees so a '>' is used.
+    {    
+        // ambient
+        vec3 ambient = Spot.ambient * texture(diffuseTexture, vTextureCoords).rgb;
+        
+        // diffuse 
+        vec3 norm = normalize(vNormals);
+        float diff = max(dot(norm, lightDir), 0.0);
+        vec3 diffuse = Spot.diffuse * diff * texture(diffuseTexture, vTextureCoords).rgb;  
+        
+        // specular
+        vec3 viewDir = normalize(vec3(Spot.position - eyeCoords));
+        vec3 reflectDir = reflect(-lightDir, norm);  
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), Material.Shininess);
+        vec3 specular = Spot.specular * spec * texture(diffuseTexture, vTextureCoords).rgb;  
+        
+        // attenuation
+        float distance = length(Spot.position - eyeCoords);
+        float attenuation = 1.0 / (Spot.constant + Spot.linear * distance + Spot.quadratic * (distance * distance));    
+
+        // ambient  *= attenuation; // remove attenuation from ambient, as otherwise at large distances the light would be darker inside than outside the spotlight due the ambient term in the else branch
+        diffuse   *= attenuation;
+        specular *= attenuation;   
+            
+        vec3 result = ambient + diffuse + specular;
+        Fcolor = vec4(result, 1.0);
+    }
+    else 
+    {
+        // else, use ambient light so scene isn't completely dark outside the spotlight.
+        Fcolor = vec4(Spot.ambient * texture(diffuseTexture, vTextureCoords).rgb, 1.0);
+    }
 }
 
 void main()
@@ -95,6 +147,7 @@ void main()
    
    //LightIntensity = + ambient + diffuse + spec;
    LightIntensity = spotlightInfo;
+   //learnSpotlight();
    gl_Position = MVP * vec4(vPos, 1.0);
 
 }

@@ -72,6 +72,8 @@ public:
     renderer.loadTexture("monster", "../textures/monster.jpg", 3);
     renderer.loadTexture("doorroom", "../textures/doorroom.png", 4);
     renderer.loadTexture("wall", "../textures/woodwall.png", 5);
+    renderer.loadTexture("fireplace", "../textures/fireplace.png", 6);
+    renderer.loadTexture("chair", "../textures/chair.png", 7);
 
     meshIndx = 0; 
     shaderIndx = 0;
@@ -89,8 +91,8 @@ public:
         lastX = x;
         lastY = y;
         firstMouse = false;
-      }
-        
+      } 
+      
       float xoffset = x - lastX;
       float yoffset = lastY - y; 
       lastX = x;
@@ -100,22 +102,49 @@ public:
       xoffset *= sensitivity;
       yoffset *= sensitivity;
 
-      yaw += xoffset;
-      pitch += yoffset;
+      // yaw += xoffset;
+      // pitch += yoffset;
 
-      if(pitch > 89.0f){
-        pitch = 89.0f;
-      }
+      // if(pitch > 89.0f){
+      //   pitch = 89.0f;
+      // }
           
-      if(pitch < -89.0f){
-        pitch = -89.0f;
-      }
+      // if(pitch < -89.0f){
+      //   pitch = -89.0f;
+      // }
           
-      glm::vec3 direction;
-      direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-      direction.y = sin(glm::radians(pitch));
-      direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-      cameraFront = glm::normalize(direction);
+      // glm::vec3 direction;
+      // direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+      // direction.y = sin(glm::radians(pitch));
+      // direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+      // cameraFront = glm::normalize(direction);
+
+
+      if (abs(dx) > abs(dy)){
+            
+          azimuth += xoffset; 
+            
+         } else if (abs(dy) > abs(dx)) { 
+            
+          elevation += yoffset; 
+            
+         }
+
+         // clamp: 
+         if (elevation > 89.0f){
+            elevation = 89.0f;
+
+         } else if (elevation < -89.0f){
+            elevation = -89.0f;
+         }
+
+
+      vec3 camPos;
+      camPos.x = cos(radians(azimuth))*cos(radians(elevation));
+      camPos.y = sin(radians(elevation));
+      camPos.z = sin(radians(azimuth))*cos(radians(elevation));
+
+      cameraFront = glm::normalize(camPos);
     }
    
   }
@@ -166,27 +195,27 @@ public:
     float aspect = ((float)width()) / height();
     renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
 
-  
+    vec3 view = vec3(cameraFront.x, 0, cameraFront.z);
 
     if (wkey){
       //eyePos = eyePos - stepSize*n;
-      cameraPos += stepSize * cameraFront;
+      cameraPos += stepSize * view;
     } else if (akey){
       //eyePos = eyePos + stepSize*v;
-      cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * stepSize;
+      cameraPos -= glm::normalize(glm::cross(view, cameraUp)) * stepSize;
 
     } else if (skey){
       //eyePos = eyePos + stepSize*n;
-      cameraPos -= stepSize * cameraFront;
+      cameraPos -= stepSize * view;
     } else if (dkey){
       //eyePos = eyePos - stepSize*v;
-      cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * stepSize;
+      cameraPos += glm::normalize(glm::cross(view, cameraUp)) * stepSize;
 
     }
 
-    n = normalize(eyePos-lookPos);
-    v = cross(up, n);
-    up = normalize(cross(n, v));
+    // n = normalize(eyePos-lookPos);
+    // v = cross(up, n);
+    // up = normalize(cross(n, v));
 
     // renderer.lookAt(eyePos, lookPos, up);
     renderer.lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
@@ -205,8 +234,17 @@ public:
     renderer.setUniform("Spot.position",vec4(cameraPos, 1));
     renderer.setUniform("Spot.intensity", 0.8f, 0.8f, 0.5f);
     renderer.setUniform("Spot.direction", cameraFront);
+
+    // renderer.setUniform("Spot.ambient",  0.4, 0.2, 0.2);
+    // renderer.setUniform("Spot.diffuse", 1.0, 1.0, 0.7);
+    // renderer.setUniform("Spot.specular", 1.0, 1.0, 0.7);
+
     renderer.setUniform("Spot.exponent", 1.0f);
-    renderer.setUniform("Spot.cutoff", 8.0f);
+    renderer.setUniform("Spot.cutoff", 15.0f);
+
+    // renderer.setUniform("Spot.constant", 1.0f);
+    // renderer.setUniform("Spot.linear", 0.09f);
+    // renderer.setUniform("Spot.quadratic", 0.032f);
 
     //https://learnopengl.com/Lighting/Materials
     // http://devernay.free.fr/cours/opengl/materials.html
@@ -241,17 +279,18 @@ public:
     renderer.rotate(vec3(-M_PI/2,0,0));
     renderer.scale(vec3(4.0f));
     renderer.translate(meshData["doorroom"].getTranslateVal());
-    renderer.translate(vec3(8.2f, 0, 0));
+    renderer.translate(vec3(2.7f, 0, 0.1f));
     renderer.mesh(meshData["doorroom"]);
     renderer.pop();
 
-    // renderer.push();
-    // renderer.texture("diffuseTexture", "wall");
-    // renderer.rotate(vec3(-M_PI/2,0,0));
-    // renderer.scale(vec3(4.0f));
-    // renderer.translate(meshData["wall"].getTranslateVal());
-    // renderer.mesh(meshData["wall"]);
-    // renderer.pop();
+    renderer.push();
+    renderer.texture("diffuseTexture", "wall");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(6.0f));
+    renderer.translate(meshData["wall"].getTranslateVal());
+    renderer.translate(vec3(0, 2.0f, 0));
+    renderer.mesh(meshData["wall"]);
+    renderer.pop();
 
     renderer.push();
     renderer.texture("diffuseTexture", "table");
@@ -269,6 +308,24 @@ public:
     renderer.translate(meshData["chandelier"].getTranslateVal());
     renderer.translate(vec3(0, 0, 3.8f));
     renderer.mesh(meshData["chandelier"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "fireplace");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["fireplace"].getTranslateVal());
+    renderer.translate(vec3(0, 4.0f, 0));
+    renderer.mesh(meshData["fireplace"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "chair");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["couch"].getTranslateVal());
+    renderer.translate(vec3(5.0f, 0, 0));
+    renderer.mesh(meshData["couch"]);
     renderer.pop();
 
     // make horror follow 
@@ -313,9 +370,12 @@ protected:
 
   bool firstMouse = true; 
   float lastX = 500;
-  float lastY = 300;
+  float lastY = 500;
   float yaw = -90.0f;
   float pitch = 0;
+
+  float azimuth = -90.0f; 
+  float elevation = 0; 
 
   bool mousePressed = false; 
 

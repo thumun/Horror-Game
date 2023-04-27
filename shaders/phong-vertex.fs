@@ -5,6 +5,7 @@ uniform bool isTexture;
 
 in vec3 LightIntensity;
 in vec2 uv; 
+// in vec4 Fcolor;
 
 out vec4 FragColor;
 
@@ -20,4 +21,6 @@ void main()
       // regular phong vertex logic 
       FragColor = vec4(LightIntensity, 1.0);
    }
+
+   //FragColor = Fcolor;
 }
