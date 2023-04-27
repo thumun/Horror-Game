@@ -63,9 +63,13 @@ public:
     //   "../shaders/shadowmap-2.vs",
     //   "../shaders/shadowmap-2.fs");
 
-    // renderer.loadShader("bumpmap", 
-    //   "../shaders/bumpmap.vs",
-    //   "../shaders/bumpmap.fs");
+    renderer.loadShader("bumpmap", 
+      "../shaders/bumpmap.vs",
+      "../shaders/bumpmap.fs");
+
+    renderer.loadShader("spotbump", 
+      "../shaders/spotbump.vs",
+      "../shaders/spotbump.fs");
 
     renderer.loadDepthTexture("shadowMap", 0, 512, 512);
 
@@ -82,6 +86,7 @@ public:
     renderer.loadTexture("fireplacewall", "../textures/fireplacewall.png", 10);
     renderer.loadTexture("viola", "../textures/viola.png", 11);
 
+    renderer.loadTexture("victorianscene-normal", "../normaltextures/victorianroom.png", 12);
 
     meshIndx = 0; 
     shaderIndx = 0;
@@ -109,24 +114,6 @@ public:
       float sensitivity = 0.1f;
       xoffset *= sensitivity;
       yoffset *= sensitivity;
-
-      // yaw += xoffset;
-      // pitch += yoffset;
-
-      // if(pitch > 89.0f){
-      //   pitch = 89.0f;
-      // }
-          
-      // if(pitch < -89.0f){
-      //   pitch = -89.0f;
-      // }
-          
-      // glm::vec3 direction;
-      // direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-      // direction.y = sin(glm::radians(pitch));
-      // direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-      // cameraFront = glm::normalize(direction);
-
 
       if (abs(dx) > abs(dy)){
             
@@ -261,18 +248,14 @@ public:
     renderer.setUniform("Material.Ks", 0.296648, 0.296648, 0.296648);
     renderer.setUniform("Material.Shininess", 0.088f);
 
-    renderer.push();
-    renderer.texture("diffuseTexture", "victorianscene");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(4.0f));
-    // renderer.scale(vec3(meshData["victorianscene"].getScaleRatio())); 
-    renderer.translate(meshData["victorianscene"].getTranslateVal());
-    renderer.translate(vec3(0, 0, 1.0f));
-    // renderer.scale(vec3(meshes[meshIndx].getScaleRatio())); 
-    // renderer.translate(meshes[meshIndx].getTranslateVal());
+    // renderer.push();
+    // renderer.texture("diffuseTexture", "victorianscene");
+    // renderer.rotate(vec3(-M_PI/2,0,0));
+    // renderer.scale(vec3(4.0f));
+    // renderer.translate(meshData["victorianscene"].getTranslateVal());
+    // renderer.translate(vec3(0, 0, 1.0f));
     // renderer.mesh(meshData["victorianscene"]);
-    renderer.mesh(meshData["victorianscene"]);
-    renderer.pop();
+    // renderer.pop();
 
     renderer.push();
     renderer.texture("diffuseTexture", "doorroom");
@@ -413,6 +396,34 @@ public:
 
     renderer.endShader();
 
+    renderer.beginShader("spotbump");
+
+    renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
+    renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
+    renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
+    renderer.setUniform("Material.shininess", 80.0f);
+    renderer.setUniform("Light.position", vec4(cameraPos, 1));
+    renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
+    renderer.setUniform("useNormalMap", useNormalMap);
+
+    renderer.setUniform("Spot.position",vec4(cameraPos, 1));
+    renderer.setUniform("Spot.intensity", 0.8f, 0.8f, 0.5f);
+    renderer.setUniform("Spot.direction", cameraFront);
+    renderer.setUniform("Spot.exponent", 1.0f);
+    renderer.setUniform("Spot.cutoff", 15.0f);
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "victorianscene");
+    renderer.texture("normalmap", "victorianscene-normal");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(4.0f));
+    renderer.translate(meshData["victorianscene"].getTranslateVal());
+    renderer.translate(vec3(0, 0, 1.0f));
+    renderer.mesh(meshData["victorianscene"]);
+    renderer.pop();
+
+    renderer.endShader();
+
   }
 
 protected:
@@ -445,6 +456,9 @@ protected:
   float elevation = 0; 
 
   bool mousePressed = false; 
+
+  bool useNormalMap = true;
+  bool animateLight = false;
 
 
 private: 

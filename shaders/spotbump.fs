@@ -5,6 +5,17 @@ struct LightInfo {
   vec3 color; 
 };
 
+struct SpotLightInfo{
+   vec4 position; 
+   vec3 intensity;
+   vec3 direction;
+
+   float exponent;
+   float cutoff; 
+}; 
+
+uniform SpotLightInfo Spot; 
+
 struct MaterialInfo {
   vec3 diffuse;
   vec3 ambient;
@@ -48,8 +59,33 @@ vec3 phongModel(in vec3 ePos, in vec3 eNormal) {
   return color;
 }
 
+vec3 adsWithSpotlight(){
+
+   vec3 tnorm = normalize(normal);
+   vec4 eyeCoords = position;
+
+   vec3 s = normalize(vec3(Spot.position) - vec3(eyeCoords));
+   float angle = acos(dot(-s, Spot.direction));
+   float cutoff = radians( clamp(Spot.cutoff, 0.0, 90.0 ) );
+   vec3 ambient = Spot.intensity * Material.ambient;
+   if(angle < cutoff) {
+      float spotFactor = pow( dot(-s, Spot.direction), Spot.exponent);
+      vec3 v = normalize(vec3(-eyeCoords));
+      vec3 h = normalize(v + s);
+
+      return ambient + spotFactor * Spot.intensity * 
+            (Material.diffuse * max(dot(s, tnorm), 0.0 ) +
+            Material.specular * pow(max(dot(h,tnorm), 0.0),Material.shininess));
+
+   } else {
+      return ambient; 
+   }
+
+}
+
 void main() {
   vec3 texNormal = normalize(2*(texture(normalmap, uv).xyz-0.5f));
   vec3 color = phongModel(position.xyz, useNormalMap? texNormal : normal);
-  FragColor = vec4(color, 1.0);
+  vec3 spotColor = adsWithSpotlight();
+  FragColor = vec4(min(color, spotColor), 1.0);
 }
