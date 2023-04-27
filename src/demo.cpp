@@ -6,6 +6,11 @@
 #include <vector>
 #include "agl/window.h"
 #include "plymesh.h"
+
+#include "fmod_errors.h"
+#include <cstdlib>
+#include <iostream>
+#include "fmod.hpp"
 // #include "osutils.h"
 
 using namespace std;
