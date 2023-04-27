@@ -51,7 +51,15 @@ For future mechanics, I was thinking of making it an escape room style game wher
 
 Flythrough Camera: 
 
-BumpMap: 
+The player navigates the space using the flythrough camera. In order to simulate walking, the player cannot move in the y-axis however they are free to look anywhere they like. This camera was created using the 
+
+Spotlight: 
+
+The spotlight shines wherever the player looks. When they are farther away, more of the space is lit up but when they're close to objects, there is a smaller radius. Due to the combination of the bumpmap, the spotlight has crisp lines and makes it rather difficult for the player to see outside the circle of visibility.  
+
+Bump Map: 
+
+The bump map uses the normals of the textures 
 
 Scene: 
 
