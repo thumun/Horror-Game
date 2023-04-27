@@ -63,7 +63,13 @@ The bump map uses the normals of the textures
 
 Scene: 
 
+The scene itself was constructed using the matrix stack. Almost every model has a rotation in the x-axis of -pi/2 in order to ensure they are facing the proper direction. Each model is scaled and centered in the scene and are translated based on where they fit best. 
+
+I found out later that some of the models were positioned oddly in blender which led to the y-direction of the rotation matrix to be skewed but since their locations/placements seemed satisfactory to me I did not change their PLY files-except for the monster model as that required more a precise rotation to ensure it faced the camera/player. 
+
 Custom models: 
+
+I found that the models available were a bit lacking (mainly that the room itself was too small and it did not have two walls). As such, I added a wall and another room. I resued some of the textures from the original room and painted some new textures in the room. 
 
 ## Credits 
 
