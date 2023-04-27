@@ -7,16 +7,15 @@
 #include "agl/window.h"
 #include "plymesh.h"
 
-#include "fmod_errors.h"
-#include <cstdlib>
-#include <iostream>
-#include "fmod.hpp"
+// #include "fmod/fmod_errors.h"
+// #include <cstdlib>
+// #include <iostream>
+// #include "fmod/fmod.hpp"
 // #include "osutils.h"
 
 using namespace std;
 using namespace glm;
 using namespace agl;
-
 
 // struct ModelData
 // {
@@ -34,6 +33,15 @@ class Viewer : public Window {
 public:
   Viewer() : Window() {
   }
+
+  // void ERRCHECK(FMOD_RESULT result) {
+  // if (result != FMOD_OK)
+  // {
+  //   printf("FMOD error! (%d) %s\n", 
+  //      result, FMOD_ErrorString(result));
+  //   exit(-1);
+  // }
+// }
 
   void setup() {
     setWindowSize(1000, 1000);
@@ -107,6 +115,31 @@ public:
     shaderIndx = 0;
 
     meshes[meshIndx].getTexCoords();
+
+    // FMOD_RESULT result;
+
+    // FMOD::System *system = NULL;
+    // FMOD::Channel *backgroundChannel = NULL;
+    // FMOD::Sound *music;
+    // FMOD::Sound *meow;
+    
+    // result = FMOD::System_Create(&system);		
+    // ERRCHECK(result);
+
+    // result = system->init(100, FMOD_INIT_NORMAL, 0);	
+	  // ERRCHECK(result);
+
+    // // Initialize background music
+	  // result = system->createStream(
+    //   "../Sounds/itsinthefog.wav", 
+    //   FMOD_DEFAULT, 0, &music);
+	  // ERRCHECK(result);
+
+    // result = music->setMode(FMOD_LOOP_NORMAL);
+	  // ERRCHECK(result);
+
+    // result = system->playSound(music, 0, true, &backgroundChannel);
+    // ERRCHECK(result);
   }
 
   ~Viewer(){
@@ -198,6 +231,9 @@ public:
   }
 
   void draw() {
+
+
+
     renderer.beginShader("phong-vertex");
 
     renderer.setUniform("isTexture", true);
