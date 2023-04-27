@@ -192,7 +192,7 @@ namespace agl {
 
    void PLYMesh::getTexCoords(){
       for (GLfloat i: _uvs){
-         cout << i << endl; 
+         // cout << i << endl; 
       }
    }
    

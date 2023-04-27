@@ -145,8 +145,9 @@ void main()
 
    vec3 spotlightInfo = adsWithSpotlight();
    
-   //LightIntensity = + ambient + diffuse + spec;
-   LightIntensity = spotlightInfo;
+   LightIntensity = + ambient + diffuse + spec;
+   //LightIntensity = spotlightInfo;
+   //LightIntensity = + ambient + diffuse + spec + spotlightInfo;
    //learnSpotlight();
    gl_Position = MVP * vec4(vPos, 1.0);
 

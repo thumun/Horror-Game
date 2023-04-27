@@ -38,12 +38,13 @@ public:
     meshData.insert({"chandelier", PLYMesh("../models/chandelier.ply")});
     meshData.insert({"doorroom", PLYMesh("../models/doorroom.ply")});
     meshData.insert({"wall", PLYMesh("../models/wall.ply")});
-
+    meshData.insert({"viola", PLYMesh("../models/viola.ply")});
     meshData.insert({"fireplacewall", PLYMesh("../models/fireplacewall.ply")});
     meshData.insert({"fireplace", PLYMesh("../models/fireplace.ply")});
     meshData.insert({"couch", PLYMesh("../models/couch.ply")});
     meshData.insert({"books1", PLYMesh("../models/books1.ply")});
     meshData.insert({"books2", PLYMesh("../models/books2.ply")});
+    meshData.insert({"books3", PLYMesh("../models/books3.ply")});
 
     meshData.insert({"monster", PLYMesh("../models/monster.ply")});
 
@@ -61,10 +62,25 @@ public:
     // meshes.insert({fileName[], fileName});
     meshes.push_back(fileName);
 
-    shaders.push_back("phong-vertex");
-    string s = "phong-vertex";
+    renderer.loadShader("phong-vertex",
+      "../shaders/phong-vertex.vs",
+      "../shaders/phong-vertex.fs");
 
-    renderer.loadShader(s, "../shaders/"+s+".vs", "../shaders/"+s+".fs");
+    renderer.loadShader("shadowmap-1",
+      "../shaders/shadowmap-1.vs",
+      "../shaders/shadowmap-1.fs");
+
+    renderer.loadShader("shadowmap-2",
+      "../shaders/shadowmap-2.vs",
+      "../shaders/shadowmap-2.fs");
+
+    // shaders.push_back("phong-vertex");
+    // shaders.push_back("phong-vertex");
+    // string s = "phong-vertex";
+
+    // renderer.loadShader(s, "../shaders/"+s+".vs", "../shaders/"+s+".fs");
+
+    renderer.loadDepthTexture("shadowMap", 0, 512, 512);
 
     renderer.loadTexture("victorianscene", "../textures/victorianscene.png", 0);
     renderer.loadTexture("table", "../textures/table.png", 1);
@@ -74,6 +90,11 @@ public:
     renderer.loadTexture("wall", "../textures/woodwall.png", 5);
     renderer.loadTexture("fireplace", "../textures/fireplace.png", 6);
     renderer.loadTexture("chair", "../textures/chair.png", 7);
+    renderer.loadTexture("books1", "../textures/books1.png", 8);
+    renderer.loadTexture("books2", "../textures/books2.png", 9);
+    renderer.loadTexture("fireplacewall", "../textures/fireplacewall.png", 10);
+    renderer.loadTexture("viola", "../textures/viola.png", 11);
+
 
     meshIndx = 0; 
     shaderIndx = 0;
@@ -188,7 +209,7 @@ public:
   }
 
   void draw() {
-    renderer.beginShader(shaders[shaderIndx]);
+    renderer.beginShader("phong-vertex");
 
     renderer.setUniform("isTexture", true);
 
@@ -203,14 +224,12 @@ public:
     } else if (akey){
       //eyePos = eyePos + stepSize*v;
       cameraPos -= glm::normalize(glm::cross(view, cameraUp)) * stepSize;
-
     } else if (skey){
       //eyePos = eyePos + stepSize*n;
       cameraPos -= stepSize * view;
     } else if (dkey){
       //eyePos = eyePos - stepSize*v;
       cameraPos += glm::normalize(glm::cross(view, cameraUp)) * stepSize;
-
     }
 
     // n = normalize(eyePos-lookPos);
@@ -224,6 +243,7 @@ public:
     // used above to find numbers for lights 
     renderer.setUniform("Light[0].Position", 20, 20, 20, 1);
     renderer.setUniform("Light[0].La", 0.4, 0.2, 0.2);
+
     // hoping for a yellow color for light 
     renderer.setUniform("Light[0].Ld", 1.0, 1.0, 0.7);
     renderer.setUniform("Light[0].Ls", 1.0, 1.0, 0.7);
@@ -297,7 +317,7 @@ public:
     renderer.rotate(vec3(-M_PI/2,0,0));
     renderer.scale(vec3(5.0f));
     renderer.translate(meshData["table"].getTranslateVal());
-    renderer.translate(vec3(0, 0, -1.5f));
+    renderer.translate(vec3(5.5f, 0, -1.5f));
     renderer.mesh(meshData["table"]);
     renderer.pop();
 
@@ -315,28 +335,106 @@ public:
     renderer.rotate(vec3(-M_PI/2,0,0));
     renderer.scale(vec3(5.0f));
     renderer.translate(meshData["fireplace"].getTranslateVal());
-    renderer.translate(vec3(0, 4.0f, 0));
+    renderer.translate(vec3(0.3f, 3.2f, -0.8f));
     renderer.mesh(meshData["fireplace"]);
     renderer.pop();
 
     renderer.push();
-    renderer.texture("diffuseTexture", "chair");
+    renderer.texture("diffuseTexture", "fireplacewall");
     renderer.rotate(vec3(-M_PI/2,0,0));
     renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["fireplacewall"].getTranslateVal());
+    renderer.translate(vec3(0.3f, 3.2f, -0.8f));
+    renderer.mesh(meshData["fireplacewall"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "chair");
+    renderer.rotate(vec3(-M_PI/2,sqrt(3)/2,0));
+    renderer.scale(vec3(5.0f));
     renderer.translate(meshData["couch"].getTranslateVal());
-    renderer.translate(vec3(5.0f, 0, 0));
+    renderer.translate(vec3(4.2f, -2.5f, -1.2f));
     renderer.mesh(meshData["couch"]);
     renderer.pop();
 
-    // make horror follow 
     renderer.push();
-    renderer.texture("diffuseTexture", "monster");
-    renderer.rotate(vec3(-M_PI/2,0,0));
-    renderer.scale(vec3(2.0f));
-    renderer.translate(meshData["monster"].getTranslateVal());
-    renderer.translate(vec3(3.0f, 0, -3.0f));
-    renderer.mesh(meshData["monster"]);
+    renderer.texture("diffuseTexture", "chair");
+    renderer.rotate(vec3(-M_PI/2,-sqrt(3)/2,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["couch"].getTranslateVal());
+    renderer.translate(vec3(4.2f, 6.1f, -1.2f));
+    renderer.mesh(meshData["couch"]);
     renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "books1");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["books1"].getTranslateVal());
+    renderer.translate(vec3(-3.0f, 0.3f, 0.2f));
+    renderer.mesh(meshData["books1"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "books2");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["books2"].getTranslateVal());
+    renderer.translate(vec3(-3.0f, 0.9f, 0.16f));
+    renderer.mesh(meshData["books2"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "books2");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["books1"].getTranslateVal());
+    renderer.translate(vec3(-3.3f, 0.9f, 0.90f));
+    renderer.mesh(meshData["books1"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "books2");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["books1"].getTranslateVal());
+    renderer.translate(vec3(-3.3f, 3.0f, 0.90f));
+    renderer.mesh(meshData["books1"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "books1");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["books1"].getTranslateVal());
+    renderer.translate(vec3(-3.0f, -0.9f, 0.16f));
+    renderer.mesh(meshData["books1"]);
+    renderer.pop();
+
+    renderer.push();
+    renderer.texture("diffuseTexture", "viola");
+    renderer.rotate(vec3(-M_PI/2,0,0));
+    renderer.scale(vec3(5.0f));
+    renderer.translate(meshData["viola"].getTranslateVal());
+    renderer.translate(vec3(-2.8f, 0, -1.5f));
+    renderer.rotate(vec3(-M_PI/2,sqrt(3)/2,0));
+    renderer.mesh(meshData["viola"]);
+    renderer.pop();
+
+    // make horror follow 
+    // renderer.push();
+    // renderer.texture("diffuseTexture", "monster");
+
+    // renderer.translate(-1.0f*meshData["monster"].getTranslateVal());
+    // renderer.rotate(vec3(M_PI/2,3*M_PI/2,M_PI));
+    // renderer.translate(meshData["monster"].getTranslateVal());
+
+    // // renderer.rotate(vec3(-M_PI/2,0,0));
+    // renderer.scale(vec3(2.0f));
+    // renderer.translate(vec3(0, 0, -1.3f));
+    // // renderer.translate(monsterMov);
+    // renderer.mesh(meshData["monster"]);
+    // renderer.pop();
 
     // renderer.push();
     // renderer.rotate(vec3(-M_PI/2,0,0));
@@ -368,6 +466,8 @@ protected:
   vec3 cameraFront = vec3(0.0f, 0.0f, -1.0f);
   vec3 cameraUp = vec3(0.0f, 1.0f,  0.0f);
 
+  vec3 monsterMov = vec3(0, -3.0f, -1.55f);
+
   bool firstMouse = true; 
   float lastX = 500;
   float lastY = 500;
@@ -388,8 +488,6 @@ private:
   bool akey = false; 
   bool skey = false; 
   bool dkey = false; 
-
-
 };
 
 int main(int argc, char** argv)
