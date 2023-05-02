@@ -49,6 +49,9 @@ elseif (APPLE)
     ./external/include
     /usr/local/include)
 
+    set(LIBRARY_DIRS
+    ./external/lib/mac/lib)
+
   set(CORE ${GLFW} ${GL_LIB})
 
 elseif (UNIX)

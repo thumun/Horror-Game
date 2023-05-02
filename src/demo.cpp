@@ -17,30 +17,28 @@ using namespace std;
 using namespace glm;
 using namespace agl;
 
-// struct ModelData
-// {
-//   string name;
-//   PLYMesh file;
 
-//   ModelData(string _name)
-//   {
-//       name = _name;
-//       file = _name;
-//   }
-// };
+struct meshItem{
+  vec3 pos;
+  vec3 orientation; 
+  vec3 scale; 
+  string texture; 
+  string normal; 
+  // plymesh 
+};
 
 class Viewer : public Window {
 public:
   Viewer() : Window() {
   }
 
-  // void ERRCHECK(FMOD_RESULT result) {
-  // if (result != FMOD_OK)
-  // {
-  //   printf("FMOD error! (%d) %s\n", 
-  //      result, FMOD_ErrorString(result));
-  //   exit(-1);
-  // }
+//   void ERRCHECK(FMOD_RESULT result) {
+//   if (result != FMOD_OK)
+//   {
+//     printf("FMOD error! (%d) %s\n", 
+//        result, FMOD_ErrorString(result));
+//     exit(-1);
+//   }
 // }
 
   void setup() {
@@ -84,7 +82,11 @@ public:
       "../shaders/spotbump.vs",
       "../shaders/spotbump.fs");
 
-    renderer.loadDepthTexture("shadowMap", 0, 512, 512);
+    // renderer.loadShader("shadertoy",
+    //     "../shaders/shadertoy.vs",
+    //     "../shaders/shadertoy.fs");
+
+    // renderer.loadDepthTexture("shadowMap", 0, 512, 512);
 
     renderer.loadTexture("victorianscene", "../textures/victorianscene.png", 0);
     renderer.loadTexture("table", "../textures/table.png", 1);
@@ -236,23 +238,24 @@ public:
 
   void draw() {
 
-    cout << "endtime: " << endTime << ", elapsed time: " << elapsedTime() << endl;
+    // cout << "endtime: " << endTime << ", elapsed time: " << elapsedTime() << endl;
+    cout << "campos: " << cameraPos << endl;
 
-    if (endTime > 0 && elapsedTime() > (endTime+5.0f)){
-      endscreen = true; 
-    }
+    // if (endTime > 0 && elapsedTime() > (endTime+5.0f)){
+    //   endscreen = true; 
+    // }
 
-    if (elapsedTime() >= 10.0f && !gameover) {
-      monsterMov = vec3(cameraFront.x + cameraPos.x, cameraFront.y, cameraFront.z+cameraPos.z);
-      gameover = true; 
-    }
+    // if (elapsedTime() >= 5.0f && !gameover) {
+    //   monsterMov = vec3(cameraFront.x + cameraPos.x, cameraFront.y, cameraFront.z+cameraPos.z);
+    //   gameover = true; 
+    // }
 
     renderer.beginShader("phong-vertex");
 
     renderer.setUniform("isTexture", true);
 
     float aspect = ((float)width()) / height();
-    renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
+    renderer.perspective(glm::radians(60.0f), aspect, 1.0f, 75.0f);
 
     vec3 view = vec3(cameraFront.x, 0, cameraFront.z);
 
@@ -297,8 +300,8 @@ public:
     // renderer.setUniform("Spot.diffuse", 1.0, 1.0, 0.7);
     // renderer.setUniform("Spot.specular", 1.0, 1.0, 0.7);
 
-    renderer.setUniform("Spot.exponent", 1.0f);
-    renderer.setUniform("Spot.cutoff", 15.0f);
+    renderer.setUniform("Spot.exponent", 20.0f);
+    renderer.setUniform("Spot.cutoff", 60.0f);
 
     // renderer.setUniform("Spot.constant", 1.0f);
     // renderer.setUniform("Spot.linear", 0.09f);
@@ -335,28 +338,40 @@ public:
 
     if (!endscreen){
 
+      renderer.beginShader("spotbump");
+
       if(gameover){
       
-      renderer.beginShader("spotbump");
-      renderer.push();
-      renderer.texture("diffuseTexture", "monster");
-      renderer.texture("normalmap", "monster-normal");
-      // renderer.rotate(vec3(0,M_PI,0));
-      // renderer.scale(vec3(2.0f));
-      // renderer.translate(vec3(0, 1.4, -0.8f));
-      renderer.translate(monsterMov);
-      // renderer.translate(vec3(0.05f, 0, -0.05f));
-      renderer.mesh(meshData["monster"]);
-      renderer.pop();
-      renderer.endShader();
+        // flashlight should flash on/off here: 
 
-      if (endTime <= 0.1){
-        endTime = elapsedTime();
-      }
+        //cout << "converted ET: " << int(elapsedTime()) << endl;
+        // would be better to have a faster logic 
+        if(int(elapsedTime()*10) % 2 == 0){
+          renderer.setUniform("noLight", true);
+        } else {
+          renderer.setUniform("noLight", false);
+        }
+
+        // renderer.beginShader("spotbump");
+        // renderer.push();
+        // renderer.texture("diffuseTexture", "monster");
+        // renderer.texture("normalmap", "monster-normal");
+        // // renderer.rotate(vec3(0,M_PI,0));
+        // // renderer.scale(vec3(2.0f));
+        // // renderer.translate(vec3(0, 1.4, -0.8f));
+        // renderer.translate(monsterMov);
+        // // renderer.translate(vec3(0.05f, 0, -0.05f));
+        // renderer.mesh(meshData["monster"]);
+        // renderer.pop();
+        // renderer.endShader();
+
+        if (endTime <= 0.1){
+          endTime = elapsedTime();
+        }
       
+      } else {
+        renderer.setUniform("noLight", false);
       }
-
-      renderer.beginShader("spotbump");
 
       renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
       renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
@@ -369,8 +384,8 @@ public:
       renderer.setUniform("Spot.position",vec4(cameraPos, 1));
       renderer.setUniform("Spot.intensity", 0.8f, 0.8f, 0.5f);
       renderer.setUniform("Spot.direction", cameraFront);
-      renderer.setUniform("Spot.exponent", 1.0f);
-      renderer.setUniform("Spot.cutoff", 15.0f);
+      renderer.setUniform("Spot.exponent", 20.0f);
+      renderer.setUniform("Spot.cutoff", 60.0f);
 
       renderer.push();
       renderer.texture("diffuseTexture", "victorianscene");
@@ -526,16 +541,34 @@ public:
       renderer.endShader();
     
     } else {
-      cout << "should be end screen" << endl;
-      
-      renderer.beginShader("unlit");
 
+      // idea:
+      // going to have flashlight go on & off a few times above 
+      // then jump cut to ortho w/ monster face 
+      // and music would be good -> 2 tracks; ambient bg && when jumpscare 
+      // possily add shhader toy of blood on top if poosible (maybe)
+
+      renderer.ortho(-10, 10, -10, 10, -10, 10);
+      renderer.beginShader("phong-vertex");
       renderer.push();
-      renderer.scale(vec3(20.0f));
-      renderer.cube();
+      renderer.texture("diffuseTexture", "monster");
+      renderer.scale(vec3(meshData["monster"].getScaleRatio()));
+      renderer.translate(vec3(meshData["monster"].getTranslateVal()));
+      renderer.mesh(meshData["monster"]);
       renderer.pop();
-      
       renderer.endShader();
+
+      // renderer.ortho(0, width(), 0, height(), -5, 5);
+      // renderer.text("Game Over", 10, 10);
+      
+      // renderer.beginShader("unlit");
+
+      // renderer.push();
+      // renderer.scale(vec3(20.0f));
+      // renderer.cube();
+      // renderer.pop();
+      
+      // renderer.endShader();
     }
     
 

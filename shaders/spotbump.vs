@@ -30,11 +30,21 @@ out vec4 position;
 out vec4 lightpos;
 out vec3 normal;
 out vec2 uv;
+out vec4 spotPos; 
+out vec3 spotDir; 
 
 void main()
 {
   position = ModelViewMatrix * vec4( vPositions, 1.0);
   lightpos = ViewMatrix * Light.position;
+
+  spotPos = ViewMatrix * Spot.position; // might have to change this 
+  spotDir = normalize(vec3(ViewMatrix * vec4(Spot.direction, 0))); // might have to change this
+
+
+  //spotPos = Spot.position;
+  //spotDir = Spot.direction;
+
   normal = NormalMatrix * vNormals;
   uv = vTextureCoords;
   gl_Position = MVP * vec4(vPositions, 1.0);

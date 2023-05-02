@@ -33,10 +33,14 @@ uniform mat3 NormalMatrix;
 uniform mat4 MVP;
 uniform bool useNormalMap;
 
+uniform bool noLight; 
+
 in vec4 position;
 in vec4 lightpos;
 in vec3 normal;
 in vec2 uv;
+in vec4 spotPos; 
+in vec3 spotDir; 
 
 out vec4 FragColor;
 
@@ -63,19 +67,20 @@ vec3 adsWithSpotlight(){
 
    vec3 tnorm = normalize(normal);
    vec4 eyeCoords = position;
+   
 
-   vec3 s = normalize(vec3(Spot.position) - vec3(eyeCoords));
-   float angle = acos(dot(-s, Spot.direction));
+   vec3 s = normalize(vec3(spotPos) - vec3(eyeCoords));
+   float angle = acos(dot(-s, spotDir));
    float cutoff = radians( clamp(Spot.cutoff, 0.0, 90.0 ) );
    vec3 ambient = Spot.intensity * Material.ambient;
-   if(angle < cutoff) {
-      float spotFactor = pow( dot(-s, Spot.direction), Spot.exponent);
-      vec3 v = normalize(vec3(-eyeCoords));
-      vec3 h = normalize(v + s);
+   
+   if(abs(angle) < cutoff) {
+      float spotFactor = pow( dot(-s, spotDir), Spot.exponent);
 
-      return ambient + spotFactor * Spot.intensity * 
-            (Material.diffuse * max(dot(s, tnorm), 0.0 ) +
-            Material.specular * pow(max(dot(h,tnorm), 0.0),Material.shininess));
+      vec3 texNormal = normalize(2*(texture(normalmap, uv).xyz-0.5f));
+      vec3 color = phongModel(position.xyz, useNormalMap? texNormal : normal);
+
+      return ambient + spotFactor * Spot.intensity * color;
 
    } else {
       return ambient; 
@@ -84,8 +89,17 @@ vec3 adsWithSpotlight(){
 }
 
 void main() {
-  vec3 texNormal = normalize(2*(texture(normalmap, uv).xyz-0.5f));
-  vec3 color = phongModel(position.xyz, useNormalMap? texNormal : normal);
+  // vec3 texNormal = normalize(2*(texture(normalmap, uv).xyz-0.5f));
+  // vec3 color = phongModel(position.xyz, useNormalMap? texNormal : normal);
   vec3 spotColor = adsWithSpotlight();
-  FragColor = vec4(min(color, spotColor), 1.0);
+
+  // trying flashing light idea 
+  // if (noLight){
+  //   FragColor = vec4(0, 0, 0, 1.0);
+  // } else {
+  //   FragColor = vec4(min(color, spotColor), 1.0);
+  // }
+
+  FragColor = vec4(spotColor, 1.0);
+  
 }
