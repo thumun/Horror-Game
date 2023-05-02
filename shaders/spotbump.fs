@@ -93,13 +93,13 @@ void main() {
   // vec3 color = phongModel(position.xyz, useNormalMap? texNormal : normal);
   vec3 spotColor = adsWithSpotlight();
 
-  // trying flashing light idea 
-  // if (noLight){
-  //   FragColor = vec4(0, 0, 0, 1.0);
-  // } else {
-  //   FragColor = vec4(min(color, spotColor), 1.0);
-  // }
+  //trying flashing light idea 
+  if (noLight){
+    FragColor = vec4(0, 0, 0, 1.0);
+  } else {
+    FragColor = vec4(spotColor, 1.0);
+  }
 
-  FragColor = vec4(spotColor, 1.0);
+  
   
 }

@@ -238,21 +238,17 @@ public:
 
   void draw() {
 
-    // cout << "endtime: " << endTime << ", elapsed time: " << elapsedTime() << endl;
-    cout << "campos: " << cameraPos << endl;
+    cout << "endtime: " << endTime << ", elapsed time: " << elapsedTime() << endl;
+    // cout << "campos: " << cameraPos << endl;
 
-    // if (endTime > 0 && elapsedTime() > (endTime+5.0f)){
-    //   endscreen = true; 
-    // }
+    if (endTime > 0 && elapsedTime() > (endTime+5.0f)){
+      endscreen = true; 
+    }
 
-    // if (elapsedTime() >= 5.0f && !gameover) {
-    //   monsterMov = vec3(cameraFront.x + cameraPos.x, cameraFront.y, cameraFront.z+cameraPos.z);
-    //   gameover = true; 
-    // }
-
-    renderer.beginShader("phong-vertex");
-
-    renderer.setUniform("isTexture", true);
+    if (elapsedTime() >= 10.0f && !gameover) {
+      monsterMov = vec3(cameraFront.x + cameraPos.x, cameraFront.y, cameraFront.z+cameraPos.z);
+      gameover = true; 
+    }
 
     float aspect = ((float)width()) / height();
     renderer.perspective(glm::radians(60.0f), aspect, 1.0f, 75.0f);
@@ -273,68 +269,7 @@ public:
       cameraPos += glm::normalize(glm::cross(view, cameraUp)) * stepSize;
     }
 
-    n = normalize(cameraPos-(cameraPos + cameraFront));
-    // v = cross(up, n);
-    // up = normalize(cross(n, v));
-
-    // renderer.lookAt(eyePos, lookPos, up);
     renderer.lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
-    //http://learnwebgl.brown37.net/09_lights/lights_combined.html
-    // used above to find numbers for lights 
-    renderer.setUniform("Light[0].Position", 20, 20, 20, 1);
-    renderer.setUniform("Light[0].La", 0.4, 0.2, 0.2);
-
-    // hoping for a yellow color for light 
-    renderer.setUniform("Light[0].Ld", 1.0, 1.0, 0.7);
-    renderer.setUniform("Light[0].Ls", 1.0, 1.0, 0.7);
-
-    //http://learnwebgl.brown37.net/09_lights/lights_combined.html
-    // used above to find numbers for lights 
-    //renderer.setUniform("Spot.position",vec4(eyePos, 1));
-    renderer.setUniform("Spot.position",vec4(cameraPos, 1));
-    renderer.setUniform("Spot.intensity", 0.8f, 0.8f, 0.5f);
-    renderer.setUniform("Spot.direction", cameraFront);
-
-    // renderer.setUniform("Spot.ambient",  0.4, 0.2, 0.2);
-    // renderer.setUniform("Spot.diffuse", 1.0, 1.0, 0.7);
-    // renderer.setUniform("Spot.specular", 1.0, 1.0, 0.7);
-
-    renderer.setUniform("Spot.exponent", 20.0f);
-    renderer.setUniform("Spot.cutoff", 60.0f);
-
-    // renderer.setUniform("Spot.constant", 1.0f);
-    // renderer.setUniform("Spot.linear", 0.09f);
-    // renderer.setUniform("Spot.quadratic", 0.032f);
-
-    //https://learnopengl.com/Lighting/Materials
-    // http://devernay.free.fr/cours/opengl/materials.html
-    // above link has table of materials -- used below (pearl)
-    renderer.setUniform("Material.Ka", 0.25, 0.20725, 0.20725);
-    renderer.setUniform("Material.Kd", 1, 0.829, 0.829);
-    renderer.setUniform("Material.Ks", 0.296648, 0.296648, 0.296648);
-    renderer.setUniform("Material.Shininess", 0.088f);
-
-    // renderer.push();
-    // renderer.texture("diffuseTexture", "victorianscene");
-    // renderer.rotate(vec3(-M_PI/2,0,0));
-    // renderer.scale(vec3(4.0f));
-    // renderer.translate(meshData["victorianscene"].getTranslateVal());
-    // renderer.translate(vec3(0, 0, 1.0f));
-    // renderer.mesh(meshData["victorianscene"]);
-    // renderer.pop();
-
-    // make horror follow 
-    // renderer.push();
-    // renderer.texture("diffuseTexture", "monster");
-    // // renderer.rotate(vec3(0,M_PI,0));
-    // renderer.scale(vec3(2.0f));
-    // // renderer.translate(vec3(0, 1.4, -0.8f));
-    // renderer.translate(-1.0f*vec3(cameraPos.x, cameraPos.y, cameraPos.z));
-    // renderer.mesh(meshData["monster"]);
-    // renderer.pop();
-
-    renderer.endShader();
 
     if (!endscreen){
 
@@ -351,19 +286,6 @@ public:
         } else {
           renderer.setUniform("noLight", false);
         }
-
-        // renderer.beginShader("spotbump");
-        // renderer.push();
-        // renderer.texture("diffuseTexture", "monster");
-        // renderer.texture("normalmap", "monster-normal");
-        // // renderer.rotate(vec3(0,M_PI,0));
-        // // renderer.scale(vec3(2.0f));
-        // // renderer.translate(vec3(0, 1.4, -0.8f));
-        // renderer.translate(monsterMov);
-        // // renderer.translate(vec3(0.05f, 0, -0.05f));
-        // renderer.mesh(meshData["monster"]);
-        // renderer.pop();
-        // renderer.endShader();
 
         if (endTime <= 0.1){
           endTime = elapsedTime();
