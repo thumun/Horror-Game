@@ -233,20 +233,25 @@ public:
     }
     else if (key == GLFW_KEY_UP){
       monsterMov += stepSize;
+      cout << monsterMov << endl;
+    }
+    else if (key == GLFW_KEY_DOWN){
+      monsterMov -= stepSize;
+      cout << monsterMov << endl;
     }
   }
 
   void draw() {
 
-    cout << "endtime: " << endTime << ", elapsed time: " << elapsedTime() << endl;
+    // cout << "endtime: " << endTime << ", elapsed time: " << elapsedTime() << endl;
     // cout << "campos: " << cameraPos << endl;
 
-    if (endTime > 0 && elapsedTime() > (endTime+5.0f)){
+    if (endTime > 0 && elapsedTime() > (endTime+2.0f)){
       endscreen = true; 
     }
 
-    if (elapsedTime() >= 10.0f && !gameover) {
-      monsterMov = vec3(cameraFront.x + cameraPos.x, cameraFront.y, cameraFront.z+cameraPos.z);
+    if (elapsedTime() >= 5.0f && !gameover) {
+      // monsterMov = vec3(cameraFront.x + cameraPos.x, cameraFront.y, cameraFront.z+cameraPos.z);
       gameover = true; 
     }
 
@@ -465,19 +470,30 @@ public:
     } else {
 
       // idea:
-      // going to have flashlight go on & off a few times above 
-      // then jump cut to ortho w/ monster face 
       // and music would be good -> 2 tracks; ambient bg && when jumpscare 
       // possily add shhader toy of blood on top if poosible (maybe)
 
+      renderer.lookAt(vec3(0, 4.0f, 4.0f), vec3(0, 2.0f, 0), vec3(0, 1, 0));
       renderer.ortho(-10, 10, -10, 10, -10, 10);
-      renderer.beginShader("phong-vertex");
+
+      renderer.beginShader("bumpmap");
+      renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
+      renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
+      renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
+      renderer.setUniform("Material.shininess", 80.0f);
+      renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
+      renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
+      renderer.setUniform("useNormalMap", useNormalMap);
       renderer.push();
       renderer.texture("diffuseTexture", "monster");
-      renderer.scale(vec3(meshData["monster"].getScaleRatio()));
+      renderer.texture("normalmap", "monster");
       renderer.translate(vec3(meshData["monster"].getTranslateVal()));
+      renderer.translate(vec3(1.0f, 0, 10.0f));
+      renderer.scale(vec3(meshData["monster"].getScaleRatio()));
+      renderer.scale(vec3(5.0f));
       renderer.mesh(meshData["monster"]);
       renderer.pop();
+
       renderer.endShader();
 
       // renderer.ortho(0, width(), 0, height(), -5, 5);
@@ -514,7 +530,8 @@ protected:
   vec3 cameraFront = vec3(0.0f, 0.0f, -1.0f);
   vec3 cameraUp = vec3(0.0f, 1.0f,  0.0f);
 
-  vec3 monsterMov;;
+  // vec3 monsterMov;
+  float monsterMov = 10.0f; 
   // vec3 currentPos;
 
   bool firstMouse = true; 
