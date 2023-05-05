@@ -238,15 +238,11 @@ public:
 
   void draw() {
 
-    // cout << "endtime: " << endTime << ", elapsed time: " << elapsedTime() << endl;
-    // cout << "campos: " << cameraPos << endl;
-
     if (endTime > 0 && elapsedTime() > (endTime+2.0f)){
       endscreen = true; 
     }
 
     if (elapsedTime() >= 20.0f && !gameover) {
-      // monsterMov = vec3(cameraFront.x + cameraPos.x, cameraFront.y, cameraFront.z+cameraPos.z);
       gameover = true; 
     }
 
@@ -256,16 +252,12 @@ public:
     vec3 view = vec3(cameraFront.x, 0, cameraFront.z);
 
     if (wkey){
-      //eyePos = eyePos - stepSize*n;
       cameraPos += stepSize * view;
     } else if (akey){
-      //eyePos = eyePos + stepSize*v;
       cameraPos -= glm::normalize(glm::cross(view, cameraUp)) * stepSize;
     } else if (skey){
-      //eyePos = eyePos + stepSize*n;
       cameraPos -= stepSize * view;
     } else if (dkey){
-      //eyePos = eyePos - stepSize*v;
       cameraPos += glm::normalize(glm::cross(view, cameraUp)) * stepSize;
     }
 
@@ -283,7 +275,6 @@ public:
       
         // flashlight should flash on/off here: 
 
-        //cout << "converted ET: " << int(elapsedTime()) << endl;
         // would be better to have a faster logic 
         if(int(elapsedTime()*10) % 2 == 0){
           renderer.setUniform("noLight", true);
@@ -501,50 +492,7 @@ public:
 
       renderer.endShader();
 
-      // renderer.beginShader("shadertoy");
-      
-      // renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
-      // renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
-      // renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
-      // renderer.setUniform("Material.shininess", 80.0f);
-      // renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
-      // renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
-      // renderer.setUniform("useNormalMap", useNormalMap);
-      // renderer.setUniform("iResolution", vec3(width(), height(), 1.0f));
-      // renderer.setUniform("iTime", elapsedTime());
-      // renderer.setUniform("diffuseTexture", "../textures/monster.jpg");
-      // renderer.setUniform("noiseTexture", "../textures/noisetexture.jpeg");
-
-      // renderer.push();
-      // renderer.texture("diffuseTexture", "monster");
-      // renderer.texture("noiseTexture", "noise");
-      // renderer.translate(vec3(meshData["monster"].getTranslateVal()));
-      // renderer.translate(vec3(1.0f, 0, 10.0f));
-      // renderer.scale(vec3(meshData["monster"].getScaleRatio()));
-      // renderer.scale(vec3(5.0f));
-      // renderer.mesh(meshData["monster"]);
-      // renderer.pop();
-
-      // renderer.endShader();
-
-      // renderer.beginShader("shadertoy");
-
-      // renderer.setUniform("iResolution", vec3(1000, 1000, 1.0f));
-      // renderer.setUniform("iTime", elapsedTime());
-
-      // renderer.push();
-      // renderer.texture("diffuseTexture", "bg");
-      // renderer.texture("noiseTexture", "noise");
-      // // renderer.translate(vec3(0, 0, 0));
-      // renderer.scale(vec3(20.0f, 20.0f, 20.0f));
-      // renderer.plane();
-      // renderer.pop();
-
-      // renderer.endShader();
-      
-
     }
-    
 
   }
 
