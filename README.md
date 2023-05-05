@@ -52,6 +52,8 @@ For future mechanics, I was thinking of making it an escape room style game wher
 
 The game starts off with the player beginning in the room with the fireplace. This room has bookshelves lining two of the walls as well as a few books on the shelves. There is also a viola on the floor. The other room has a portrait of headless figure, two chairs with a table, and an impassable door. The player is free to walk around the space but there is a creepy ambience (due to the music and the spotlight). After 20 seconds, the light starts flashing and after 5 more seconds, the endscreen appears- the jumpscare with the monster (accompanied by jumpscare music). 
 
+!(gameplay)[https://github.com/thumun/Horror-Game/blob/main/images/demo.gif]
+
 ## Features 
 
 **Flythrough Camera:**
