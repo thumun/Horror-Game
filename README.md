@@ -74,10 +74,14 @@ I found out later that some of the models were positioned oddly in blender which
 
 I found that the models available were a bit lacking (mainly that the room itself was too small and it did not have two walls). As such, I added a wall and another room. I resued some of the textures from the original room and painted some new textures in the room. 
 
-**Music: 
-**
+**Music:**
+
 I used the FMOD dependency, to add music to the game. The background music is looped and is called "It's In The Fog" by Darren Curtis. 
 When the spotlight starts flashing, one of the monster tracks begins 'mixkit terror transition' and then when the monster appears the background music changed to a loop of 'beat-n-bass'.
+
+## Data Structures
+
+
 
 ## Credits 
 
