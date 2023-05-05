@@ -52,7 +52,7 @@ elseif (APPLE)
 
     set(LIBRARY_DIRS external/lib/mac/lib)
 
-  set(CORE ${GLFW} ${GL_LIB})
+  set(CORE ${GLFW} ${GL_LIB} fmod)
 
 elseif (UNIX)
 

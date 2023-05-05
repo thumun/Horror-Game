@@ -7,10 +7,10 @@
 #include "agl/window.h"
 #include "plymesh.h"
 
-// #include "fmod/fmod_errors.h"
-// #include <cstdlib>
-// #include <iostream>
-// #include "fmod/fmod.hpp"
+#include "fmod/fmod_errors.h"
+#include <cstdlib>
+#include <iostream>
+#include "fmod/fmod.hpp"
 
 using namespace std;
 using namespace glm;
@@ -31,14 +31,14 @@ public:
   Viewer() : Window() {
   }
 
-//   void ERRCHECK(FMOD_RESULT result) {
-//   if (result != FMOD_OK)
-//   {
-//     printf("FMOD error! (%d) %s\n", 
-//        result, FMOD_ErrorString(result));
-//     exit(-1);
-//   }
-// }
+  void ERRCHECK(FMOD_RESULT result) {
+  if (result != FMOD_OK)
+  {
+    printf("FMOD error! (%d) %s\n", 
+       result, FMOD_ErrorString(result));
+    exit(-1);
+  }
+}
 
   void setup() {
     setWindowSize(1000, 1000);
@@ -104,36 +104,40 @@ public:
     renderer.loadTexture("monster-normal", "../normaltextures/monster.jpg", 23);
 
     renderer.loadTexture("noise", "../textures/noisetexture.jpeg", 24);
+    renderer.loadTexture("bg", "../textures/background.png", 25);
 
     meshIndx = 0; 
     shaderIndx = 0;
+  
+    result = FMOD::System_Create(&system);		
+    ERRCHECK(result);
+
+    result = system->init(100, FMOD_INIT_NORMAL, 0);	
+    ERRCHECK(result);
+
+    // Initialize background music
+    result = system->createStream(
+      "../sounds/itsinthefog.wav", 
+      FMOD_DEFAULT, 0, &music);
+    ERRCHECK(result);
+
+    result = system->createStream(
+      "../sounds/mixkit-terror-transition-2484.wav", 
+      FMOD_DEFAULT, 0, &meow);
+	  ERRCHECK(result);
+
+    result = system->createStream(
+      "../sounds/beat-n-bass-128-bpm.wav", 
+      FMOD_DEFAULT, 0, &monster);
+	  ERRCHECK(result);
+
+    result = music->setMode(FMOD_LOOP_NORMAL);
+    ERRCHECK(result);
+
+    result = system->playSound(music, 0, false, &backgroundChannel);
+    ERRCHECK(result);
 
     meshes[meshIndx].getTexCoords();
-
-    // FMOD_RESULT result;
-
-    // FMOD::System *system = NULL;
-    // FMOD::Channel *backgroundChannel = NULL;
-    // FMOD::Sound *music;
-    // FMOD::Sound *meow;
-    
-    // result = FMOD::System_Create(&system);		
-    // ERRCHECK(result);
-
-    // result = system->init(100, FMOD_INIT_NORMAL, 0);	
-	  // ERRCHECK(result);
-
-    // // Initialize background music
-	  // result = system->createStream(
-    //   "../sounds/itsinthefog.wav", 
-    //   FMOD_DEFAULT, 0, &music);
-	  // ERRCHECK(result);
-
-    // result = music->setMode(FMOD_LOOP_NORMAL);
-	  // ERRCHECK(result);
-
-    // result = system->playSound(music, 0, true, &backgroundChannel);
-    // ERRCHECK(result);
   }
 
   ~Viewer(){
@@ -241,7 +245,7 @@ public:
       endscreen = true; 
     }
 
-    if (elapsedTime() >= 5.0f && !gameover) {
+    if (elapsedTime() >= 20.0f && !gameover) {
       // monsterMov = vec3(cameraFront.x + cameraPos.x, cameraFront.y, cameraFront.z+cameraPos.z);
       gameover = true; 
     }
@@ -272,6 +276,10 @@ public:
       renderer.beginShader("spotbump");
 
       if(gameover){
+
+        result = system->playSound(meow, 0, false, 0);
+			  ERRCHECK(result);	
+        system->update();
       
         // flashlight should flash on/off here: 
 
@@ -460,6 +468,11 @@ public:
     
     } else {
 
+      result = system->playSound(music, 0, true, &backgroundChannel);
+      ERRCHECK(result);
+      result = system->playSound(monster, 0, false, &backgroundChannel);
+      ERRCHECK(result);
+
       // idea:
       // and music would be good -> 2 tracks; ambient bg && when jumpscare 
       // possily add shhader toy of blood on top if poosible (maybe)
@@ -467,44 +480,18 @@ public:
       renderer.lookAt(vec3(0, 4.0f, 4.0f), vec3(0, 2.0f, 0), vec3(0, 1, 0));
       renderer.ortho(-10, 10, -10, 10, -10, 10);
 
-      // renderer.beginShader("bumpmap");
+      renderer.beginShader("bumpmap");
 
-      // renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
-      // renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
-      // renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
-      // renderer.setUniform("Material.shininess", 80.0f);
-      // renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
-      // renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
-      // renderer.setUniform("useNormalMap", useNormalMap);
-      // renderer.push();
-      // renderer.texture("diffuseTexture", "monster");
-      // renderer.texture("normalmap", "monster");
-      // renderer.translate(vec3(meshData["monster"].getTranslateVal()));
-      // renderer.translate(vec3(1.0f, 0, 10.0f));
-      // renderer.scale(vec3(meshData["monster"].getScaleRatio()));
-      // renderer.scale(vec3(5.0f));
-      // renderer.mesh(meshData["monster"]);
-      // renderer.pop();
-
-      // renderer.endShader();
-
-      renderer.beginShader("shadertoy");
-      
-      // renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
-      // renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
-      // renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
-      // renderer.setUniform("Material.shininess", 80.0f);
-      // renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
-      // renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
-      // renderer.setUniform("useNormalMap", useNormalMap);
-      renderer.setUniform("iResolution", vec3(width(), height(), 1.0f));
-      renderer.setUniform("iTime", elapsedTime());
-      // renderer.setUniform("diffuseTexture", "../textures/monster.jpg");
-      // renderer.setUniform("noiseTexture", "../textures/noisetexture.jpeg");
-
+      renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
+      renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
+      renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
+      renderer.setUniform("Material.shininess", 80.0f);
+      renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
+      renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
+      renderer.setUniform("useNormalMap", useNormalMap);
       renderer.push();
       renderer.texture("diffuseTexture", "monster");
-      renderer.texture("noiseTexture", "noise");
+      renderer.texture("normalmap", "monster");
       renderer.translate(vec3(meshData["monster"].getTranslateVal()));
       renderer.translate(vec3(1.0f, 0, 10.0f));
       renderer.scale(vec3(meshData["monster"].getScaleRatio()));
@@ -514,17 +501,48 @@ public:
 
       renderer.endShader();
 
-      // renderer.ortho(0, width(), 0, height(), -5, 5);
-      // renderer.text("Game Over", 10, 10);
+      // renderer.beginShader("shadertoy");
       
-      // renderer.beginShader("unlit");
+      // renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
+      // renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
+      // renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
+      // renderer.setUniform("Material.shininess", 80.0f);
+      // renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
+      // renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
+      // renderer.setUniform("useNormalMap", useNormalMap);
+      // renderer.setUniform("iResolution", vec3(width(), height(), 1.0f));
+      // renderer.setUniform("iTime", elapsedTime());
+      // renderer.setUniform("diffuseTexture", "../textures/monster.jpg");
+      // renderer.setUniform("noiseTexture", "../textures/noisetexture.jpeg");
 
       // renderer.push();
-      // renderer.scale(vec3(20.0f));
-      // renderer.cube();
+      // renderer.texture("diffuseTexture", "monster");
+      // renderer.texture("noiseTexture", "noise");
+      // renderer.translate(vec3(meshData["monster"].getTranslateVal()));
+      // renderer.translate(vec3(1.0f, 0, 10.0f));
+      // renderer.scale(vec3(meshData["monster"].getScaleRatio()));
+      // renderer.scale(vec3(5.0f));
+      // renderer.mesh(meshData["monster"]);
       // renderer.pop();
-      
+
       // renderer.endShader();
+
+      // renderer.beginShader("shadertoy");
+
+      // renderer.setUniform("iResolution", vec3(1000, 1000, 1.0f));
+      // renderer.setUniform("iTime", elapsedTime());
+
+      // renderer.push();
+      // renderer.texture("diffuseTexture", "bg");
+      // renderer.texture("noiseTexture", "noise");
+      // // renderer.translate(vec3(0, 0, 0));
+      // renderer.scale(vec3(20.0f, 20.0f, 20.0f));
+      // renderer.plane();
+      // renderer.pop();
+
+      // renderer.endShader();
+      
+
     }
     
 
@@ -551,6 +569,14 @@ protected:
   // vec3 monsterMov;
   float monsterMov = 10.0f; 
   // vec3 currentPos;
+
+  FMOD_RESULT result;
+
+  FMOD::System *system = NULL;
+  FMOD::Channel *backgroundChannel = NULL;
+  FMOD::Sound *music;
+  FMOD::Sound *meow;
+  FMOD::Sound *monster;
 
   bool firstMouse = true; 
   float lastX = 500;
