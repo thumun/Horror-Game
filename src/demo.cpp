@@ -11,7 +11,6 @@
 // #include <cstdlib>
 // #include <iostream>
 // #include "fmod/fmod.hpp"
-// #include "osutils.h"
 
 using namespace std;
 using namespace glm;
@@ -66,14 +65,6 @@ public:
       "../shaders/phong-vertex.vs",
       "../shaders/phong-vertex.fs");
 
-    // renderer.loadShader("shadowmap-1",
-    //   "../shaders/shadowmap-1.vs",
-    //   "../shaders/shadowmap-1.fs");
-
-    // renderer.loadShader("shadowmap-2",
-    //   "../shaders/shadowmap-2.vs",
-    //   "../shaders/shadowmap-2.fs");
-
     renderer.loadShader("bumpmap", 
       "../shaders/bumpmap.vs",
       "../shaders/bumpmap.fs");
@@ -82,11 +73,9 @@ public:
       "../shaders/spotbump.vs",
       "../shaders/spotbump.fs");
 
-    // renderer.loadShader("shadertoy",
-    //     "../shaders/shadertoy.vs",
-    //     "../shaders/shadertoy.fs");
-
-    // renderer.loadDepthTexture("shadowMap", 0, 512, 512);
+    renderer.loadShader("shadertoy",
+        "../shaders/shadertoy.vs",
+        "../shaders/shadertoy.fs");
 
     renderer.loadTexture("victorianscene", "../textures/victorianscene.png", 0);
     renderer.loadTexture("table", "../textures/table.png", 1);
@@ -114,6 +103,8 @@ public:
     renderer.loadTexture("viola-normal", "../normaltextures/viola.png", 22);
     renderer.loadTexture("monster-normal", "../normaltextures/monster.jpg", 23);
 
+    renderer.loadTexture("noise", "../textures/noisetexture.jpeg", 24);
+
     meshIndx = 0; 
     shaderIndx = 0;
 
@@ -134,7 +125,7 @@ public:
 
     // // Initialize background music
 	  // result = system->createStream(
-    //   "../Sounds/itsinthefog.wav", 
+    //   "../sounds/itsinthefog.wav", 
     //   FMOD_DEFAULT, 0, &music);
 	  // ERRCHECK(result);
 
@@ -476,17 +467,44 @@ public:
       renderer.lookAt(vec3(0, 4.0f, 4.0f), vec3(0, 2.0f, 0), vec3(0, 1, 0));
       renderer.ortho(-10, 10, -10, 10, -10, 10);
 
-      renderer.beginShader("bumpmap");
-      renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
-      renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
-      renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
-      renderer.setUniform("Material.shininess", 80.0f);
-      renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
-      renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
-      renderer.setUniform("useNormalMap", useNormalMap);
+      // renderer.beginShader("bumpmap");
+
+      // renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
+      // renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
+      // renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
+      // renderer.setUniform("Material.shininess", 80.0f);
+      // renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
+      // renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
+      // renderer.setUniform("useNormalMap", useNormalMap);
+      // renderer.push();
+      // renderer.texture("diffuseTexture", "monster");
+      // renderer.texture("normalmap", "monster");
+      // renderer.translate(vec3(meshData["monster"].getTranslateVal()));
+      // renderer.translate(vec3(1.0f, 0, 10.0f));
+      // renderer.scale(vec3(meshData["monster"].getScaleRatio()));
+      // renderer.scale(vec3(5.0f));
+      // renderer.mesh(meshData["monster"]);
+      // renderer.pop();
+
+      // renderer.endShader();
+
+      renderer.beginShader("shadertoy");
+      
+      // renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
+      // renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
+      // renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
+      // renderer.setUniform("Material.shininess", 80.0f);
+      // renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
+      // renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
+      // renderer.setUniform("useNormalMap", useNormalMap);
+      renderer.setUniform("iResolution", vec3(width(), height(), 1.0f));
+      renderer.setUniform("iTime", elapsedTime());
+      // renderer.setUniform("diffuseTexture", "../textures/monster.jpg");
+      // renderer.setUniform("noiseTexture", "../textures/noisetexture.jpeg");
+
       renderer.push();
       renderer.texture("diffuseTexture", "monster");
-      renderer.texture("normalmap", "monster");
+      renderer.texture("noiseTexture", "noise");
       renderer.translate(vec3(meshData["monster"].getTranslateVal()));
       renderer.translate(vec3(1.0f, 0, 10.0f));
       renderer.scale(vec3(meshData["monster"].getScaleRatio()));

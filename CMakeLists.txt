@@ -47,10 +47,10 @@ elseif (APPLE)
      ./src/agl
      ./src
     ./external/include
+    external/include/fmod
     /usr/local/include)
 
-    set(LIBRARY_DIRS
-    ./external/lib/mac/lib)
+    set(LIBRARY_DIRS external/lib/mac/lib)
 
   set(CORE ${GLFW} ${GL_LIB})
 

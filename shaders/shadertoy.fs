@@ -4,6 +4,10 @@
 
 uniform vec3 iResolution; 
 uniform float iTime; 
+uniform sampler2D diffuseTexture; 
+uniform sampler2D noiseTexture; 
+
+out vec4 fragColor;
 
 float hash21(vec2 p)
 {
@@ -26,7 +30,7 @@ float rainDrops(vec2 st, float time, float size)
    	vec2 id = floor(uv);
     vec3 h = (hash13(id.x * 467.983 + id.y * 1294.387) - .5) * .8;
     vec2 dropUv = gridUv - h.xy;
-    vec4 noise = textureLod(iChannel1, id * .05, 0.);
+    vec4 noise = textureLod(noiseTexture, id * .05, 0.);
     float drop = smoothstep(.25, 0., length(dropUv)) *
         max(0., 1. - fract(time * (noise.b + .1) * .2 + noise.g) * 2.);
     return drop;
@@ -102,8 +106,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
    	lightning *= 1. - smoothstep(.0, .1, lightningTime)
         + smoothstep(.9, 1., lightningTime); // lightning flash mask
     
-	//vec3 col = textureLod(iChannel0, st+normal.xy * 3., lod).rgb;
-    vec3 col *= (1. + lightning);
+	vec3 col = textureLod(diffuseTexture, st+normal.xy * 3., lod).rgb;
+    col *= (1. + lightning);
     
     col *= vec3(1., .8, .7); // slight red-ish tint
     col += (drops.y > 0. ? vec3(.5, -.1, -.15)*drops.y : vec3(0.)); // bloody trails
@@ -112,4 +116,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     col = mix(col, col*smoothstep(.8, .35, length(st - .5)), .6); // vignette
     
     fragColor = vec4(col, 1.0);
+}
+
+void main(){
+    mainImage(fragColor, gl_FragCoord.xy);
 }
