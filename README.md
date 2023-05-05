@@ -50,32 +50,32 @@ For future mechanics, I was thinking of making it an escape room style game wher
 
 ## Features 
 
-Flythrough Camera: 
-
+**Flythrough Camera: 
+**
 The player navigates the space using the flythrough camera. In order to simulate walking, the player cannot move in the y-axis however they are free to look anywhere they like. 
 
-Spotlight: 
-
+**Spotlight: 
+**
 The spotlight shines wherever the player looks while the surrounding area has a darkened hue. The spotlight itself has a slightly green tone due to the color of the light in combination with the bump map. By increasing the exponent, the light is blurred around the edges. In addition, the angle of the light is 60 degrees which makes the spotlight light up most of the screen. 
 
 After a certain amount of time passes (20 seconds), the spotlight begins to flash on/off until the endscreen happens. 
 
-Bump Map: 
-
+**Bump Map: 
+**
 The bump map uses the normals of the textures to simulate a 3d texture to the models based on the light hitting the model. This helps in adding more details while not having to have more complex models. 
 
-Scene: 
-
+**Scene: 
+**
 The scene itself was constructed using the matrix stack. Almost every model has a rotation in the x-axis of -pi/2 in order to ensure they are facing the proper direction. Each model is scaled and centered in the scene and are translated based on where they fit best. 
 
 I found out later that some of the models were positioned oddly in blender which led to the y-direction of the rotation matrix to be skewed but since their locations/placements seemed satisfactory to me I did not change their PLY files-except for the monster model as that required more a precise rotation to ensure it faced the camera/player. 
 
-Custom models: 
-
+**Custom models: 
+**
 I found that the models available were a bit lacking (mainly that the room itself was too small and it did not have two walls). As such, I added a wall and another room. I resued some of the textures from the original room and painted some new textures in the room. 
 
-Music: 
-
+**Music: 
+**
 I used the FMOD dependency, to add music to the game. The background music is looped and is called "It's In The Fog" by Darren Curtis. 
 When the spotlight starts flashing, one of the monster tracks begins 'mixkit terror transition' and then when the monster appears the background music changed to a loop of 'beat-n-bass'.
 
