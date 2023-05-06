@@ -50,7 +50,7 @@ For future mechanics, I was thinking of making it an escape room style game wher
 
 ## Gameplay 
 
-The game starts off with the player beginning in the room with the fireplace. This room has bookshelves lining two of the walls as well as a few books on the shelves. There is also a viola on the floor. The other room has a portrait of headless figure, two chairs with a table, and an impassable door. The player is free to walk around the space but there is a creepy ambience (due to the music and the spotlight). After 20 seconds, the light starts flashing and after 5 more seconds, the endscreen appears- the jumpscare with the monster (accompanied by jumpscare music). 
+The game starts off with the player beginning in the room with the fireplace. This room has bookshelves lining two of the walls as well as a few books on the shelves. There is also a viola on the floor. The other room has a portrait of headless figure, two chairs with a table, and an impassable door. The player is free to walk around the space but there is a creepy ambience (due to the music and the spotlight). After 20 seconds, the light starts flashing and after 5 more seconds, the endscreen appears- the jumpscare with the monster (accompanied by jumpscare music). This jumpscare is possible via a transition from perspective view to orthographic view. 
 
 ![gameplay](https://github.com/thumun/Horror-Game/blob/main/images/demo.gif)
 
@@ -86,6 +86,8 @@ I used the FMOD dependency, to add music to the game. The background music is lo
 When the spotlight starts flashing, one of the monster tracks begins 'mixkit terror transition' and then when the monster appears the background music changed to a loop of 'beat-n-bass'.
 
 ## Data Structures
+
+
 
 ## Dependencies Used
 
