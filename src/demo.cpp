@@ -622,7 +622,7 @@ protected:
 
   FMOD::System *system = NULL;
   FMOD::Channel *backgroundChannel = NULL;
-  FMOD::Sound *music;
+  FMOD::Sound *music = NULL;
   FMOD::Sound *meow;
   FMOD::Sound *monster;
 
