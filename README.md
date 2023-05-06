@@ -93,26 +93,35 @@ FMOD (Information here: https://www.fmod.com/ )
 
 ## Credits 
 
+Monster model:
+
 https://sketchfab.com/3d-models/brute-from-amnesia-the-dark-descent-2f8dd46255f44af7bf80c92977b43e95
-used this model as the 'monster'
+
+Scene assets: 
 
 https://foxdevart.itch.io/victorian-study-3d-asset-pack?download
-used the models/assets in the scene 
+
+Stock Photo for Wall Portrait: 
 
 https://www.dreamstime.com/photos-images/general-oil-painting.html 
-for the stock photo image used in the portrait on the wall
+
+Guides for OpenGL:
 
 https://learnopengl.com/
-used for finding constants of materials, lights, and for resources
 
-Background Music 
+Background Music: 
+
 https://www.youtube.com/watch?v=5oF5lS0sajs&list=PLfP6i5T0-DkI74kb_BWxYNZRjIvF1D4Lp&index=1
 "Darren Curtis - It's In The Fog" is under a Creative Commons license (CC BY 3.0).
  / darrencurtismusic   
 Music promoted by BreakingCopyright: https://bit.ly/b-in-the-fog 
 
+Sound effect: 
+
 https://mixkit.co/free-sound-effects/horror/
 "Terror transition"
+
+Second Sound effect: 
 
 beat-n-bass from https://github.com/BrynMawr-CS313-S23/simple-sound-fmod/tree/main/sounds
 
