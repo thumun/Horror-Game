@@ -92,7 +92,10 @@ When the spotlight starts flashing, one of the monster tracks begins 'mixkit ter
 
 ## Data Structures
 
-
+Incorporated a map in order to organize the meshData (PLYmesh files, textures, normal textures). 
+C++ STL Vectors were used to organize shaders being used in the project. 
+Vectors were also used in calculations (namely for matrix transformations and camera movement). 
+Used sound channels and library elements to implement music and sound effects. 
 
 ## Dependencies Used
 
