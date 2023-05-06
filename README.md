@@ -52,7 +52,7 @@ For future mechanics, I was thinking of making it an escape room style game wher
 
 The game starts off with the player beginning in the room with the fireplace. This room has bookshelves lining two of the walls as well as a few books on the shelves. There is also a viola on the floor. The other room has a portrait of headless figure, two chairs with a table, and an impassable door. The player is free to walk around the space but there is a creepy ambience (due to the music and the spotlight). After 20 seconds, the light starts flashing and after 5 more seconds, the endscreen appears- the jumpscare with the monster (accompanied by jumpscare music). This jumpscare is possible via a transition from perspective view to orthographic view. 
 
-![gameplay](https://github.com/thumun/Horror-Game/blob/main/images/demo.gif)
+![gameplay](https://github.com/thumun/Horror-Game/blob/main/images/youdied.gif)
 
 *Important Note: Music is in the game but not seen in demo above as it is a gif*
 
@@ -71,6 +71,8 @@ After a certain amount of time passes (20 seconds), the spotlight begins to flas
 **Bump Map:**
 
 The bump map uses the normals of the textures to simulate a 3d texture to the models based on the light hitting the model. This helps in adding more details while not having to have more complex models. 
+
+![bumpmapinfo](https://github.com/thumun/Horror-Game/blob/main/images/bumpmapinfo.png)
 
 **Scene:**
 
@@ -95,8 +97,11 @@ When the spotlight starts flashing, one of the monster tracks begins 'mixkit ter
 ## Data Structures
 
 Incorporated a map in order to organize the meshData (PLYmesh files, textures, normal textures). 
+
 C++ STL Vectors were used to organize shaders being used in the project. 
+
 Vectors were also used in calculations (namely for matrix transformations and camera movement). 
+
 Used sound channels and library elements to implement music and sound effects. 
 
 ## Dependencies Used
