@@ -2,13 +2,13 @@
 //
 //--------------------------------------------------
 // Author: Neha Thumu
-// Date: 5/5/2023 
-// Description: ~Horror game~ - the player is stuck in a creepy cottage  
-//              decorated with victorian themed furniture. They can use a 
-//              flashlight to navigate the space. Eventually, the flashlight 
+// Date: 5/5/2023
+// Description: ~Horror game~ - the player is stuck in a creepy cottage
+//              decorated with victorian themed furniture. They can use a
+//              flashlight to navigate the space. Eventually, the flashlight
 //              starts to flash on/off then the player is jumpscared.
 //
-// Used Aline's sample code for the FMOD 
+// Used Aline's sample code for the FMOD
 //--------------------------------------------------
 
 #include <cmath>
@@ -26,24 +26,29 @@ using namespace std;
 using namespace glm;
 using namespace agl;
 
-class Viewer : public Window {
+class Viewer : public Window
+{
 public:
-  Viewer() : Window() {
-  }
-
-  void ERRCHECK(FMOD_RESULT result) {
-  if (result != FMOD_OK)
+  Viewer() : Window()
   {
-    printf("FMOD error! (%d) %s\n", 
-       result, FMOD_ErrorString(result));
-    exit(-1);
   }
-}
 
-  void setup() {
+  void ERRCHECK(FMOD_RESULT result)
+  {
+    if (result != FMOD_OK)
+    {
+      printf("FMOD error! (%d) %s\n",
+             result, FMOD_ErrorString(result));
+      exit(-1);
+    }
+  }
+
+  void setup()
+  {
     setWindowSize(1000, 1000);
 
-    meshData.insert({"victorianscene", PLYMesh("../models/victorianscene.ply")});
+    meshData.insert({"victorianscene", 
+                    PLYMesh("../models/victorianscene.ply")});
     meshData.insert({"table", PLYMesh("../models/table.ply")});
     meshData.insert({"chandelier", PLYMesh("../models/chandelier.ply")});
     meshData.insert({"doorroom", PLYMesh("../models/doorroom.ply")});
@@ -62,20 +67,20 @@ public:
     meshes.push_back(fileName);
 
     renderer.loadShader("phong-vertex",
-      "../shaders/phong-vertex.vs",
-      "../shaders/phong-vertex.fs");
+                        "../shaders/phong-vertex.vs",
+                        "../shaders/phong-vertex.fs");
 
-    renderer.loadShader("bumpmap", 
-      "../shaders/bumpmap.vs",
-      "../shaders/bumpmap.fs");
+    renderer.loadShader("bumpmap",
+                        "../shaders/bumpmap.vs",
+                        "../shaders/bumpmap.fs");
 
-    renderer.loadShader("spotbump", 
-      "../shaders/spotbump.vs",
-      "../shaders/spotbump.fs");
+    renderer.loadShader("spotbump",
+                        "../shaders/spotbump.vs",
+                        "../shaders/spotbump.fs");
 
     renderer.loadShader("shadertoy",
-        "../shaders/shadertoy.vs",
-        "../shaders/shadertoy.fs");
+                        "../shaders/shadertoy.vs",
+                        "../shaders/shadertoy.fs");
 
     renderer.loadTexture("victorianscene", "../textures/victorianscene.png", 0);
     renderer.loadTexture("table", "../textures/table.png", 1);
@@ -90,47 +95,53 @@ public:
     renderer.loadTexture("fireplacewall", "../textures/fireplacewall.png", 10);
     renderer.loadTexture("viola", "../textures/viola.png", 11);
 
-    renderer.loadTexture("victorianscene-normal", "../normaltextures/victorianroom.png", 12);
-    renderer.loadTexture("doorroom-normal", "../normaltextures/doorroom.png", 13);
+    renderer.loadTexture("victorianscene-normal", 
+                          "../normaltextures/victorianroom.png", 12);
+    renderer.loadTexture("doorroom-normal", "../normaltextures/doorroom.png", 
+                          13);
     renderer.loadTexture("wall-normal", "../normaltextures/wall.png", 14);
     renderer.loadTexture("books1-normal", "../normaltextures/books1.png", 15);
     renderer.loadTexture("books2-normal", "../normaltextures/books2.png", 16);
     renderer.loadTexture("chair-normal", "../normaltextures/chair.png", 17);
-    renderer.loadTexture("chandelier-normal", "../normaltextures/chandelier.png", 18);
-    renderer.loadTexture("fireplace-normal", "../normaltextures/fireplace.png", 19);
-    renderer.loadTexture("fireplacewall-normal", "../normaltextures/fireplacewall.png", 20);
+    renderer.loadTexture("chandelier-normal", 
+                          "../normaltextures/chandelier.png", 18);
+    renderer.loadTexture("fireplace-normal", "../normaltextures/fireplace.png", 
+                        19);
+    renderer.loadTexture("fireplacewall-normal", 
+                          "../normaltextures/fireplacewall.png", 20);
     renderer.loadTexture("table-normal", "../normaltextures/table.png", 21);
     renderer.loadTexture("viola-normal", "../normaltextures/viola.png", 22);
     renderer.loadTexture("monster-normal", "../normaltextures/monster.jpg", 23);
 
     renderer.loadTexture("noise", "../textures/noisetexture.jpeg", 24);
     renderer.loadTexture("gameover", "../textures/gameover.png", 25);
-    renderer.loadTexture("gameover-normal", "../normaltextures/gameover.png", 25);
+    renderer.loadTexture("gameover-normal", "../normaltextures/gameover.png", 
+                          25);
 
-    meshIndx = 0; 
+    meshIndx = 0;
     shaderIndx = 0;
-  
-    result = FMOD::System_Create(&system);		
+
+    result = FMOD::System_Create(&system);
     ERRCHECK(result);
 
-    result = system->init(100, FMOD_INIT_NORMAL, 0);	
+    result = system->init(100, FMOD_INIT_NORMAL, 0);
     ERRCHECK(result);
 
     // Initialize background music
     result = system->createStream(
-      "../sounds/itsinthefog.wav", 
-      FMOD_DEFAULT, 0, &music);
+        "../sounds/itsinthefog.wav",
+        FMOD_DEFAULT, 0, &music);
     ERRCHECK(result);
 
     result = system->createStream(
-      "../sounds/mixkit-terror-transition-2484.wav", 
-      FMOD_DEFAULT, 0, &meow);
-	  ERRCHECK(result);
+        "../sounds/mixkit-terror-transition-2484.wav",
+        FMOD_DEFAULT, 0, &meow);
+    ERRCHECK(result);
 
     result = system->createStream(
-      "../sounds/beat-n-bass-128-bpm.wav", 
-      FMOD_DEFAULT, 0, &monster);
-	  ERRCHECK(result);
+        "../sounds/beat-n-bass-128-bpm.wav",
+        FMOD_DEFAULT, 0, &monster);
+    ERRCHECK(result);
 
     result = music->setMode(FMOD_LOOP_NORMAL);
     ERRCHECK(result);
@@ -141,23 +152,33 @@ public:
     meshes[meshIndx].getTexCoords();
   }
 
-  ~Viewer(){
-    // meshes.clear();
+  ~Viewer()
+  {
+    if (music != NULL)
+    {
+      result = music->release();
+      ERRCHECK(result);
+    }
+    result = system->release();
+    ERRCHECK(result);
   }
 
-  // the user can drag around the screen to look around and move the 
-  // spotlight at the same time 
-  // this uses azimuth and elevation to move around 
-  void mouseMotion(int x, int y, int dx, int dy) {
-    if (mousePressed){
-      if (firstMouse){
+  // the user can drag around the screen to look around and move the
+  // spotlight at the same time
+  // this uses azimuth and elevation to move around
+  void mouseMotion(int x, int y, int dx, int dy)
+  {
+    if (mousePressed)
+    {
+      if (firstMouse)
+      {
         lastX = x;
         lastY = y;
         firstMouse = false;
-      } 
-      
+      }
+
       float xoffset = x - lastX;
-      float yoffset = lastY - y; 
+      float yoffset = lastY - y;
       lastX = x;
       lastY = y;
 
@@ -165,100 +186,124 @@ public:
       xoffset *= sensitivity;
       yoffset *= sensitivity;
 
-      if (abs(dx) > abs(dy)){
-            
-          azimuth += xoffset; 
-            
-         } else if (abs(dy) > abs(dx)) { 
-            
-          elevation += yoffset; 
-            
-         }
+      if (abs(dx) > abs(dy))
+      {
 
-         // clamp: 
-         if (elevation > 89.0f){
-            elevation = 89.0f;
+        azimuth += xoffset;
+      }
+      else if (abs(dy) > abs(dx))
+      {
 
-         } else if (elevation < -89.0f){
-            elevation = -89.0f;
-         }
+        elevation += yoffset;
+      }
 
+      // clamp:
+      if (elevation > 89.0f)
+      {
+        elevation = 89.0f;
+      }
+      else if (elevation < -89.0f)
+      {
+        elevation = -89.0f;
+      }
 
       vec3 camPos;
-      camPos.x = cos(radians(azimuth))*cos(radians(elevation));
+      camPos.x = cos(radians(azimuth)) * cos(radians(elevation));
       camPos.y = sin(radians(elevation));
-      camPos.z = sin(radians(azimuth))*cos(radians(elevation));
+      camPos.z = sin(radians(azimuth)) * cos(radians(elevation));
 
       cameraFront = glm::normalize(camPos);
     }
-   
   }
 
-  void mouseDown(int button, int mods) {  
-    mousePressed = true; 
+  void mouseDown(int button, int mods)
+  {
+    mousePressed = true;
   }
 
-  void mouseUp(int button, int mods) {
-    mousePressed = false; 
+  void mouseUp(int button, int mods)
+  {
+    mousePressed = false;
   }
 
-  void scroll(float dx, float dy) {
+  void scroll(float dx, float dy)
+  {
   }
 
-  void keyUp(int key, int mods) {
-    if (key == GLFW_KEY_W){
+  void keyUp(int key, int mods)
+  {
+    if (key == GLFW_KEY_W)
+    {
       wkey = false;
-    } else if (key == GLFW_KEY_A){
-      akey = false; 
-
-    } else if (key == GLFW_KEY_S){
-      skey = false; 
-
-    } else if (key == GLFW_KEY_D){
-      dkey = false; 
-    } 
-
+    }
+    else if (key == GLFW_KEY_A)
+    {
+      akey = false;
+    }
+    else if (key == GLFW_KEY_S)
+    {
+      skey = false;
+    }
+    else if (key == GLFW_KEY_D)
+    {
+      dkey = false;
+    }
   }
 
   // when using WASD keys, can control the movement of "person"
-  void keyDown(int key, int mods) {
-    if (key == GLFW_KEY_W){
+  void keyDown(int key, int mods)
+  {
+    if (key == GLFW_KEY_W)
+    {
       wkey = true;
-    } else if (key == GLFW_KEY_A){
-      akey = true; 
-    } else if (key == GLFW_KEY_S){
-      skey = true; 
-    } else if (key == GLFW_KEY_D){
-      dkey = true; 
     }
-    else if (key == GLFW_KEY_UP){
+    else if (key == GLFW_KEY_A)
+    {
+      akey = true;
+    }
+    else if (key == GLFW_KEY_S)
+    {
+      skey = true;
+    }
+    else if (key == GLFW_KEY_D)
+    {
+      dkey = true;
+    }
+    else if (key == GLFW_KEY_UP)
+    {
       monsterMov += stepSize;
       cout << monsterMov << endl;
     }
-    else if (key == GLFW_KEY_DOWN){
+    else if (key == GLFW_KEY_DOWN)
+    {
       monsterMov -= stepSize;
       cout << monsterMov << endl;
     }
   }
 
-  void draw() {
+  void draw()
+  {
 
-    // logic to start the jumpscare 
-    if (endTime > 0 && elapsedTime() > (endTime+2.0f)){
-      endscreen = true; 
-      if (monsterTime <= 0){
+    // logic to start the jumpscare
+    if (endTime > 0 && elapsedTime() > (endTime + 2.0f))
+    {
+      endscreen = true;
+      if (monsterTime <= 0)
+      {
         monsterTime = elapsedTime();
       }
     }
 
-    // logic to start the flashlight on/off flashing 
-    if (elapsedTime() >= 20.0f && !gameover) {
-      gameover = true; 
+    // logic to start the flashlight on/off flashing
+    if (elapsedTime() >= 20.0f && !gameover)
+    {
+      gameover = true;
     }
 
-    // logic to go from jumpscare to 'you died' screen 
-    if (monsterTime > 0 && elapsedTime() > (monsterTime+5.0f)) {
-      death = true; 
+    // logic to go from jumpscare to 'you died' screen
+    if (monsterTime > 0 && elapsedTime() > (monsterTime + 5.0f))
+    {
+      death = true;
     }
 
     float aspect = ((float)width()) / height();
@@ -266,47 +311,61 @@ public:
 
     vec3 view = vec3(cameraFront.x, 0, cameraFront.z);
 
-    // flythrough camera logic 
-    // uses WASD to move around 
-    if (wkey){
+    // flythrough camera logic
+    // uses WASD to move around
+    if (wkey)
+    {
       cameraPos += stepSize * view;
-    } else if (akey){
+    }
+    else if (akey)
+    {
       cameraPos -= glm::normalize(glm::cross(view, cameraUp)) * stepSize;
-    } else if (skey){
+    }
+    else if (skey)
+    {
       cameraPos -= stepSize * view;
-    } else if (dkey){
+    }
+    else if (dkey)
+    {
       cameraPos += glm::normalize(glm::cross(view, cameraUp)) * stepSize;
     }
 
     renderer.lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-    if (!endscreen){
+    if (!endscreen)
+    {
 
       renderer.beginShader("spotbump");
 
-      // the flashlight going on/off logic 
-      // also changing the music track for the jumpscare 
-      if(gameover){
+      // the flashlight going on/off logic
+      // also changing the music track for the jumpscare
+      if (gameover)
+      {
 
         result = system->playSound(meow, 0, false, 0);
-			  ERRCHECK(result);	
+        ERRCHECK(result);
         system->update();
-      
-        if(int(elapsedTime()*10) % 2 == 0){
+
+        if (int(elapsedTime() * 10) % 2 == 0)
+        {
           renderer.setUniform("noLight", true);
-        } else {
+        }
+        else
+        {
           renderer.setUniform("noLight", false);
         }
 
-        if (endTime <= 0.1){
+        if (endTime <= 0.1)
+        {
           endTime = elapsedTime();
         }
-      
-      } else {
+      }
+      else
+      {
         renderer.setUniform("noLight", false);
       }
 
-      // setting the main environment scene 
+      // setting the main environment scene
       // (all the furniture)
       renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
       renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
@@ -316,17 +375,16 @@ public:
       renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
       renderer.setUniform("useNormalMap", useNormalMap);
 
-      renderer.setUniform("Spot.position",vec4(cameraPos, 1));
+      renderer.setUniform("Spot.position", vec4(cameraPos, 1));
       renderer.setUniform("Spot.intensity", 0.8f, 0.8f, 0.5f);
       renderer.setUniform("Spot.direction", cameraFront);
       renderer.setUniform("Spot.exponent", 20.0f);
       renderer.setUniform("Spot.cutoff", 60.0f);
 
-
       renderer.push();
       renderer.texture("diffuseTexture", "victorianscene");
       renderer.texture("normalmap", "victorianscene-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(4.0f));
       renderer.translate(meshData["victorianscene"].getTranslateVal());
       renderer.translate(vec3(0, 0, 1.0f));
@@ -336,7 +394,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "doorroom");
       renderer.texture("normalmap", "doorroom-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(4.0f));
       renderer.translate(meshData["doorroom"].getTranslateVal());
       renderer.translate(vec3(2.7f, 0, 0.2f));
@@ -346,7 +404,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "wall");
       renderer.texture("normalmap", "wall-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(6.0f));
       renderer.translate(meshData["wall"].getTranslateVal());
       renderer.translate(vec3(0, 2.0f, 0));
@@ -356,7 +414,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "table");
       renderer.texture("normalmap", "table-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(5.0f));
       renderer.translate(meshData["table"].getTranslateVal());
       renderer.translate(vec3(5.5f, 0, -1.5f));
@@ -366,7 +424,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "chandelier");
       renderer.texture("normalmap", "chandelier-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(3.0f));
       renderer.translate(meshData["chandelier"].getTranslateVal());
       renderer.translate(vec3(0, 0, 3.8f));
@@ -376,7 +434,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "fireplace");
       renderer.texture("normalmap", "fireplace-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(5.0f));
       renderer.translate(meshData["fireplace"].getTranslateVal());
       renderer.translate(vec3(0.3f, 3.2f, -0.8f));
@@ -386,7 +444,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "fireplacewall");
       renderer.texture("normalmap", "fireplacewall-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(5.0f));
       renderer.translate(meshData["fireplacewall"].getTranslateVal());
       renderer.translate(vec3(0.3f, 3.2f, -0.8f));
@@ -396,7 +454,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "chair");
       renderer.texture("normalmap", "chair-normal");
-      renderer.rotate(vec3(-M_PI/2,sqrt(3)/2,0));
+      renderer.rotate(vec3(-M_PI / 2, sqrt(3) / 2, 0));
       renderer.scale(vec3(5.0f));
       renderer.translate(meshData["couch"].getTranslateVal());
       renderer.translate(vec3(4.2f, -2.5f, -1.2f));
@@ -406,7 +464,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "chair");
       renderer.texture("normalmap", "chair-normal");
-      renderer.rotate(vec3(-M_PI/2,-sqrt(3)/2,0));
+      renderer.rotate(vec3(-M_PI / 2, -sqrt(3) / 2, 0));
       renderer.scale(vec3(5.0f));
       renderer.translate(meshData["couch"].getTranslateVal());
       renderer.translate(vec3(4.2f, 6.1f, -1.2f));
@@ -416,7 +474,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "books1");
       renderer.texture("normalmap", "books1-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(5.0f));
       renderer.translate(meshData["books1"].getTranslateVal());
       renderer.translate(vec3(-3.0f, 0.3f, 0.2f));
@@ -426,7 +484,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "books2");
       renderer.texture("normalmap", "books2-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(5.0f));
       renderer.translate(meshData["books2"].getTranslateVal());
       renderer.translate(vec3(-3.0f, 0.9f, 0.16f));
@@ -436,7 +494,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "books2");
       renderer.texture("normalmap", "books2-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(5.0f));
       renderer.translate(meshData["books1"].getTranslateVal());
       renderer.translate(vec3(-3.3f, 0.9f, 0.90f));
@@ -446,7 +504,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "books2");
       renderer.texture("normalmap", "books2-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(5.0f));
       renderer.translate(meshData["books1"].getTranslateVal());
       renderer.translate(vec3(-3.3f, 3.0f, 0.90f));
@@ -456,7 +514,7 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "books1");
       renderer.texture("normalmap", "books1-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(5.0f));
       renderer.translate(meshData["books1"].getTranslateVal());
       renderer.translate(vec3(-3.0f, -0.9f, 0.16f));
@@ -466,29 +524,31 @@ public:
       renderer.push();
       renderer.texture("diffuseTexture", "viola");
       renderer.texture("normalmap", "viola-normal");
-      renderer.rotate(vec3(-M_PI/2,0,0));
+      renderer.rotate(vec3(-M_PI / 2, 0, 0));
       renderer.scale(vec3(5.0f));
       renderer.translate(meshData["viola"].getTranslateVal());
       renderer.translate(vec3(-2.8f, 0, -1.5f));
-      renderer.rotate(vec3(-M_PI/2,sqrt(3)/2,0));
+      renderer.rotate(vec3(-M_PI / 2, sqrt(3) / 2, 0));
       renderer.mesh(meshData["viola"]);
       renderer.pop();
 
       renderer.endShader();
-    
-    } else {
-      // adding second jumpscare track 
+    }
+    else
+    {
+      // adding second jumpscare track
       result = system->playSound(music, 0, true, &backgroundChannel);
       ERRCHECK(result);
       result = system->playSound(monster, 0, true, &backgroundChannel);
       ERRCHECK(result);
 
-      // change to orthographic view 
+      // change to orthographic view
       renderer.lookAt(vec3(0, 4.0f, 4.0f), vec3(0, 2.0f, 0), vec3(0, 1, 0));
       renderer.ortho(-10, 10, -10, 10, -10, 10);
 
-      // monster jumpscare 
-      if (!death){
+      // monster jumpscare
+      if (!death)
+      {
         renderer.beginShader("bumpmap");
 
         renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
@@ -509,9 +569,10 @@ public:
         renderer.pop();
 
         renderer.endShader();
-
-      } else { 
-        // 'you died' screen 
+      }
+      else
+      {
+        // 'you died' screen
         renderer.beginShader("bumpmap");
 
         renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
@@ -530,34 +591,33 @@ public:
         renderer.endShader();
       }
     }
-
   }
 
 protected:
-  // info for each mesh: name, PLYmesh, texture, normaltextures 
-  map<string, PLYMesh> meshData; 
-  std::vector<PLYMesh> meshes; 
-  // shaders in project 
+  // info for each mesh: name, PLYmesh, texture, normaltextures
+  map<string, PLYMesh> meshData;
+  std::vector<PLYMesh> meshes;
+  // shaders in project
   std::vector<string> shaders;
 
-  vec3 eyePos = vec3(0,0,0.5f);
+  vec3 eyePos = vec3(0, 0, 0.5f);
   vec3 lookPos = vec3(0, 0, 0);
   vec3 up = vec3(0, 1, 0);
-  vec3 n = normalize(eyePos-lookPos);
+  vec3 n = normalize(eyePos - lookPos);
   vec3 v = cross(up, n);
   float stepSize = 0.1f;
 
-  // the idea from class w/ eyepos was being weird so followed a tutorial 
+  // the idea from class w/ eyepos was being weird so followed a tutorial
   // to set up camera/player: https://learnopengl.com/Getting-started/Camera
-  vec3 cameraPos = vec3(0.0f, 0.0f,  3.0f);
+  vec3 cameraPos = vec3(0.0f, 0.0f, 3.0f);
   vec3 cameraFront = vec3(0.0f, 0.0f, -1.0f);
-  vec3 cameraUp = vec3(0.0f, 1.0f,  0.0f);
+  vec3 cameraUp = vec3(0.0f, 1.0f, 0.0f);
 
   // vec3 monsterMov;
-  float monsterMov = 10.0f; 
+  float monsterMov = 10.0f;
   // vec3 currentPos;
 
-  // music info 
+  // music info
   FMOD_RESULT result;
 
   FMOD::System *system = NULL;
@@ -566,16 +626,16 @@ protected:
   FMOD::Sound *meow;
   FMOD::Sound *monster;
 
-  bool firstMouse = true; 
+  bool firstMouse = true;
   float lastX = 500;
   float lastY = 500;
   float yaw = -90.0f;
   float pitch = 0;
 
-  float azimuth = -90.0f; 
-  float elevation = 0; 
+  float azimuth = -90.0f;
+  float elevation = 0;
 
-  bool mousePressed = false; 
+  bool mousePressed = false;
 
   bool useNormalMap = true;
   bool animateLight = false;
@@ -583,22 +643,21 @@ protected:
   bool gameover = false;
   bool endscreen = false;
 
-  float endTime = 0.0f; 
-  bool death = false; 
-  float monsterTime = 0.0f; 
+  float endTime = 0.0f;
+  bool death = false;
+  float monsterTime = 0.0f;
 
-
-private: 
+private:
   int meshIndx;
   int shaderIndx;
 
-  bool wkey = false; 
-  bool akey = false; 
-  bool skey = false; 
-  bool dkey = false; 
+  bool wkey = false;
+  bool akey = false;
+  bool skey = false;
+  bool dkey = false;
 };
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   Viewer viewer;
   viewer.run();

@@ -38,8 +38,8 @@ void main()
   position = ModelViewMatrix * vec4( vPositions, 1.0);
   lightpos = ViewMatrix * Light.position;
 
-  spotPos = ViewMatrix * Spot.position; // might have to change this 
-  spotDir = normalize(vec3(ViewMatrix * vec4(Spot.direction, 0))); // might have to change this
+  spotPos = ViewMatrix * Spot.position; 
+  spotDir = normalize(vec3(ViewMatrix * vec4(Spot.direction, 0)));
 
 
   //spotPos = Spot.position;
