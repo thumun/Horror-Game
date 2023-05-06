@@ -44,6 +44,8 @@ in vec3 spotDir;
 
 out vec4 FragColor;
 
+// from aline's sample code 
+// https://github.com/alinen/agl/blob/main/shaders/bumpmap.fs 
 vec3 phongModel(in vec3 ePos, in vec3 eNormal) {
   vec3 L = normalize(lightpos.xyz - lightpos.w * ePos);
   vec3 v = normalize(-ePos);
@@ -63,6 +65,7 @@ vec3 phongModel(in vec3 ePos, in vec3 eNormal) {
   return color;
 }
 
+// from the opengl textbook
 vec3 adsWithSpotlight(){
 
    vec3 tnorm = normalize(normal);

@@ -1,5 +1,15 @@
 // Bryn Mawr College, alinen, 2020
 //
+//--------------------------------------------------
+// Author: Neha Thumu
+// Date: 5/5/2023 
+// Description: ~Horror game~ - the player is stuck in a creepy cottage  
+//              decorated with victorian themed furniture. They can use a 
+//              flashlight to navigate the space. Eventually, the flashlight 
+//              starts to flash on/off then the player is jumpscared.
+//
+// Used Aline's sample code for the FMOD 
+//--------------------------------------------------
 
 #include <cmath>
 #include <string>
@@ -135,6 +145,9 @@ public:
     // meshes.clear();
   }
 
+  // the user can drag around the screen to look around and move the 
+  // spotlight at the same time 
+  // this uses azimuth and elevation to move around 
   void mouseMotion(int x, int y, int dx, int dy) {
     if (mousePressed){
       if (firstMouse){
@@ -230,6 +243,7 @@ public:
 
   void draw() {
 
+    // logic to start the jumpscare 
     if (endTime > 0 && elapsedTime() > (endTime+2.0f)){
       endscreen = true; 
       if (monsterTime <= 0){
@@ -237,10 +251,12 @@ public:
       }
     }
 
-    if (elapsedTime() >= 5.0f && !gameover) {
+    // logic to start the flashlight on/off flashing 
+    if (elapsedTime() >= 20.0f && !gameover) {
       gameover = true; 
     }
 
+    // logic to go from jumpscare to 'you died' screen 
     if (monsterTime > 0 && elapsedTime() > (monsterTime+5.0f)) {
       death = true; 
     }
@@ -250,6 +266,8 @@ public:
 
     vec3 view = vec3(cameraFront.x, 0, cameraFront.z);
 
+    // flythrough camera logic 
+    // uses WASD to move around 
     if (wkey){
       cameraPos += stepSize * view;
     } else if (akey){
@@ -266,6 +284,8 @@ public:
 
       renderer.beginShader("spotbump");
 
+      // the flashlight going on/off logic 
+      // also changing the music track for the jumpscare 
       if(gameover){
 
         result = system->playSound(meow, 0, false, 0);
@@ -286,6 +306,8 @@ public:
         renderer.setUniform("noLight", false);
       }
 
+      // setting the main environment scene 
+      // (all the furniture)
       renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
       renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
       renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
@@ -455,14 +477,17 @@ public:
       renderer.endShader();
     
     } else {
+      // adding second jumpscare track 
       result = system->playSound(music, 0, true, &backgroundChannel);
       ERRCHECK(result);
       result = system->playSound(monster, 0, true, &backgroundChannel);
       ERRCHECK(result);
 
+      // change to orthographic view 
       renderer.lookAt(vec3(0, 4.0f, 4.0f), vec3(0, 2.0f, 0), vec3(0, 1, 0));
       renderer.ortho(-10, 10, -10, 10, -10, 10);
 
+      // monster jumpscare 
       if (!death){
         renderer.beginShader("bumpmap");
 
@@ -486,6 +511,7 @@ public:
         renderer.endShader();
 
       } else { 
+        // 'you died' screen 
         renderer.beginShader("bumpmap");
 
         renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
@@ -508,8 +534,10 @@ public:
   }
 
 protected:
+  // info for each mesh: name, PLYmesh, texture, normaltextures 
   map<string, PLYMesh> meshData; 
   std::vector<PLYMesh> meshes; 
+  // shaders in project 
   std::vector<string> shaders;
 
   vec3 eyePos = vec3(0,0,0.5f);
@@ -529,6 +557,7 @@ protected:
   float monsterMov = 10.0f; 
   // vec3 currentPos;
 
+  // music info 
   FMOD_RESULT result;
 
   FMOD::System *system = NULL;
