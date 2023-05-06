@@ -54,6 +54,8 @@ The game starts off with the player beginning in the room with the fireplace. Th
 
 ![gameplay](https://github.com/thumun/Horror-Game/blob/main/images/demo.gif)
 
+*Important Note: Music is in the game but not seen in demo above as it is a gif*
+
 ## Features 
 
 **Flythrough Camera:**
@@ -92,7 +94,10 @@ When the spotlight starts flashing, one of the monster tracks begins 'mixkit ter
 
 ## Data Structures
 
-
+Incorporated a map in order to organize the meshData (PLYmesh files, textures, normal textures). 
+C++ STL Vectors were used to organize shaders being used in the project. 
+Vectors were also used in calculations (namely for matrix transformations and camera movement). 
+Used sound channels and library elements to implement music and sound effects. 
 
 ## Dependencies Used
 
