@@ -7,6 +7,8 @@ A game where you can explore a wonderful little cottage tucked away in the woods
 
 ## How to build
 
+**NOTE: This project will only build for mac due to the FMOD**
+
 *Windows*
 
 Open git bash to the directory containing this repository.
@@ -54,7 +56,7 @@ The game starts off with the player beginning in the room with the fireplace. Th
 
 ![gameplay](https://github.com/thumun/Horror-Game/blob/main/images/youdied.gif)
 
-*Important Note: Music is in the game but not seen in demo above as it is a gif*
+*Important Note: Music is in the game but not seen in demo above as it is a gif; there was also something weird going on with the gif- the actual program does not have the blue grid dots*
 
 ## Features 
 
