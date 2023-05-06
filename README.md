@@ -54,6 +54,8 @@ The game starts off with the player beginning in the room with the fireplace. Th
 
 ![gameplay](https://github.com/thumun/Horror-Game/blob/main/images/demo.gif)
 
+*Important Note: Music is in the game but not seen in demo above as it is a gif*
+
 ## Features 
 
 **Flythrough Camera:**
