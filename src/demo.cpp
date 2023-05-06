@@ -16,16 +16,6 @@ using namespace std;
 using namespace glm;
 using namespace agl;
 
-
-struct meshItem{
-  vec3 pos;
-  vec3 orientation; 
-  vec3 scale; 
-  string texture; 
-  string normal; 
-  // plymesh 
-};
-
 class Viewer : public Window {
 public:
   Viewer() : Window() {
@@ -104,7 +94,8 @@ public:
     renderer.loadTexture("monster-normal", "../normaltextures/monster.jpg", 23);
 
     renderer.loadTexture("noise", "../textures/noisetexture.jpeg", 24);
-    renderer.loadTexture("bg", "../textures/background.png", 25);
+    renderer.loadTexture("gameover", "../textures/gameover.png", 25);
+    renderer.loadTexture("gameover-normal", "../normaltextures/gameover.png", 25);
 
     meshIndx = 0; 
     shaderIndx = 0;
@@ -216,6 +207,7 @@ public:
 
   }
 
+  // when using WASD keys, can control the movement of "person"
   void keyDown(int key, int mods) {
     if (key == GLFW_KEY_W){
       wkey = true;
@@ -240,10 +232,17 @@ public:
 
     if (endTime > 0 && elapsedTime() > (endTime+2.0f)){
       endscreen = true; 
+      if (monsterTime <= 0){
+        monsterTime = elapsedTime();
+      }
     }
 
-    if (elapsedTime() >= 20.0f && !gameover) {
+    if (elapsedTime() >= 5.0f && !gameover) {
       gameover = true; 
+    }
+
+    if (monsterTime > 0 && elapsedTime() > (monsterTime+5.0f)) {
+      death = true; 
     }
 
     float aspect = ((float)width()) / height();
@@ -273,9 +272,6 @@ public:
 			  ERRCHECK(result);	
         system->update();
       
-        // flashlight should flash on/off here: 
-
-        // would be better to have a faster logic 
         if(int(elapsedTime()*10) % 2 == 0){
           renderer.setUniform("noLight", true);
         } else {
@@ -303,6 +299,7 @@ public:
       renderer.setUniform("Spot.direction", cameraFront);
       renderer.setUniform("Spot.exponent", 20.0f);
       renderer.setUniform("Spot.cutoff", 60.0f);
+
 
       renderer.push();
       renderer.texture("diffuseTexture", "victorianscene");
@@ -458,40 +455,54 @@ public:
       renderer.endShader();
     
     } else {
-
       result = system->playSound(music, 0, true, &backgroundChannel);
       ERRCHECK(result);
-      result = system->playSound(monster, 0, false, &backgroundChannel);
+      result = system->playSound(monster, 0, true, &backgroundChannel);
       ERRCHECK(result);
-
-      // idea:
-      // and music would be good -> 2 tracks; ambient bg && when jumpscare 
-      // possily add shhader toy of blood on top if poosible (maybe)
 
       renderer.lookAt(vec3(0, 4.0f, 4.0f), vec3(0, 2.0f, 0), vec3(0, 1, 0));
       renderer.ortho(-10, 10, -10, 10, -10, 10);
 
-      renderer.beginShader("bumpmap");
+      if (!death){
+        renderer.beginShader("bumpmap");
 
-      renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
-      renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
-      renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
-      renderer.setUniform("Material.shininess", 80.0f);
-      renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
-      renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
-      renderer.setUniform("useNormalMap", useNormalMap);
-      renderer.push();
-      renderer.texture("diffuseTexture", "monster");
-      renderer.texture("normalmap", "monster");
-      renderer.translate(vec3(meshData["monster"].getTranslateVal()));
-      renderer.translate(vec3(1.0f, 0, 10.0f));
-      renderer.scale(vec3(meshData["monster"].getScaleRatio()));
-      renderer.scale(vec3(5.0f));
-      renderer.mesh(meshData["monster"]);
-      renderer.pop();
+        renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
+        renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
+        renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
+        renderer.setUniform("Material.shininess", 80.0f);
+        renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
+        renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
+        renderer.setUniform("useNormalMap", useNormalMap);
+        renderer.push();
+        renderer.texture("diffuseTexture", "monster");
+        renderer.texture("normalmap", "monster");
+        renderer.translate(vec3(meshData["monster"].getTranslateVal()));
+        renderer.translate(vec3(1.0f, 0, 10.0f));
+        renderer.scale(vec3(meshData["monster"].getScaleRatio()));
+        renderer.scale(vec3(5.0f));
+        renderer.mesh(meshData["monster"]);
+        renderer.pop();
 
-      renderer.endShader();
+        renderer.endShader();
 
+      } else { 
+        renderer.beginShader("bumpmap");
+
+        renderer.setUniform("Material.specular", 1.0f, 1.0f, 1.0f);
+        renderer.setUniform("Material.diffuse", vec3(0.6f, 0.8f, 1.0f));
+        renderer.setUniform("Material.ambient", 0.1f, 0.1f, 0.1f);
+        renderer.setUniform("Material.shininess", 80.0f);
+        renderer.setUniform("Light.position", vec4(0, 0, 3.0f, 1));
+        renderer.setUniform("Light.color", 1.0f, 1.0f, 1.0f);
+        renderer.push();
+        renderer.texture("diffuseTexture", "gameover");
+        renderer.translate(vec3(0, 7.0f, 8.0f));
+        renderer.scale(vec3(10.0f));
+        renderer.plane();
+        renderer.pop();
+
+        renderer.endShader();
+      }
     }
 
   }
@@ -544,6 +555,8 @@ protected:
   bool endscreen = false;
 
   float endTime = 0.0f; 
+  bool death = false; 
+  float monsterTime = 0.0f; 
 
 
 private: 
